@@ -169,79 +169,71 @@ async function renderAdmin() {
 
 async function uploadFiles() {
   const files = [...document.getElementById("files").files];
-  if (!files.length) return;
+
+  if (!files.length) {
+    document.getElementById("uploadMsg").textContent = "Please select a file first.";
+    return;
+  }
 
   const msg = document.getElementById("uploadMsg");
   msg.textContent = "Uploading securely...";
 
   for (const file of files) {
-    if (!["image/jpeg","image/png","image/webp","image/gif","video/mp4","video/webm","video/quicktime"].includes(file.type)) {
-      msg.textContent = `Skipped ${file.name}: unsupported type`;
-      continue;
+
+    const isMedia =
+      file.type.startsWith("image/") ||
+      file.type.startsWith("video/");
+
+    if (!isMedia) {
+      msg.textContent = `Skipped ${file.name}: unsupported file type`;
+      return;
     }
 
-    if (file.size > 150 * 1024 * 1024) {
-      msg.textContent = `Skipped ${file.name}: over 150 MB`;
-      continue;
+    // Supabase bucket is limited to 50 MB
+    if (file.size > 50 * 1024 * 1024) {
+      msg.textContent = `Skipped ${file.name}: file is over 50 MB`;
+      return;
     }
 
-    const safe = file.name.toLowerCase().replace(/[^a-z0-9._-]/g, "-");
+    const safe = file.name
+      .toLowerCase()
+      .replace(/[^a-z0-9._-]/g, "_");
+
     const path = `${Date.now()}-${crypto.randomUUID()}-${safe}`;
     const type = file.type.startsWith("video/") ? "video" : "photo";
 
-    const up = await client.storage.from(BUCKET).upload(path, file, {
-      upsert: false,
-      contentType: file.type
-    });
+    const up = await client.storage
+      .from(BUCKET)
+      .upload(path, file, {
+        upsert: false,
+        contentType: file.type
+      });
 
     if (up.error) {
-      msg.textContent = up.error.message;
-      continue;
+      console.error("Storage upload error:", up.error);
+      msg.textContent = `Upload failed: ${up.error.message}`;
+      return;
     }
 
-    const ins = await client.from("memories")
-      .insert({ path, type, title: file.name })
+    const ins = await client
+      .from("memories")
+      .insert({
+        path: path,
+        type: type,
+        title: file.name
+      })
       .select()
       .single();
 
     if (ins.error) {
       await client.storage.from(BUCKET).remove([path]);
-      msg.textContent = ins.error.message;
-      continue;
+      console.error("Database error:", ins.error);
+      msg.textContent = `Database error: ${ins.error.message}`;
+      return;
     }
   }
 
   msg.textContent = "Upload complete ❤️";
   document.getElementById("files").value = "";
   await loadMemories();
-}
-
-async function deleteMemory(id, path) {
-  if (!confirm("Delete this memory permanently?")) return;
-
-  const a = await client.from("memories").delete().eq("id", id);
-  if (a.error) return alert(a.error.message);
-
-  const b = await client.storage.from(BUCKET).remove([path]);
-  if (b.error) console.warn(b.error);
-
-  await loadMemories();
-}
-
-function escapeHtml(value) {
-  return String(value).replace(/[&<>"']/g, ch => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  }[ch]));
-}
-
-function finalSurprise() {
-  for (let i = 0; i < 100; i++) {
-    const c = document.createElement("div");
-    c.className = "confetti";
-    c.style.left = Math.random() * 100 + "vw";
-    c.style.animationDelay = Math.random() * 2 + "s";
-    document.body.appendChild(c);
-    setTimeout(() => c.remove(), 5000);
-  }
-  alert("Urja ❤️\n\nYou deserve all the happiness, love and beautiful moments in the world. 🥹\n\nHappy Birthday once again! 🎂✨");
 }
