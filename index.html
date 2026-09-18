@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Urja — A Birthday Original ❤️</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div id="intro">
+    <div class="streak s1"></div><div class="streak s2"></div><div class="streak s3"></div>
+    <div class="intro-logo">URJA</div>
+    <div class="intro-line">A STORY MADE OF LITTLE MOMENTS...</div>
+    <div class="intro-line delay">ONE BEAUTIFUL SOUL. ONE VERY SPECIAL DAY. ❤️</div>
+    <button id="enterBtn" class="primary hidden">▶ ENTER HER STORY</button>
+  </div>
+
+  <header>
+    <div class="brand">URJA</div>
+    <nav><a href="#memories">Memories</a><a href="#letter">Birthday Letter</a><a href="#admin">Admin</a></nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="shade"></div>
+      <div class="hero-copy">
+        <p class="eyebrow">A BIRTHDAY ORIGINAL • 2026</p>
+        <h1>URJA ❤️</h1>
+        <p>One special girl. Beautiful memories. And a little world made just to make you smile.</p>
+        <button class="primary" onclick="document.querySelector('#memories').scrollIntoView({behavior:'smooth'})">▶ PLAY STORY</button>
+      </div>
+    </section>
+
+    <section id="memories" class="section">
+      <h2>Continue Watching — Urja's Story 🎬</h2>
+      <div id="videos" class="row"></div>
+      <h2>Top Memories ❤️</h2>
+      <div id="photos" class="row"></div>
+    </section>
+
+    <section class="story">
+      <p>Some people come into our lives…<br><br>and somehow make ordinary moments feel a little more <b>special.</b><br><br>Today isn't just another day…<br><br><b>It's your day, Urja. ❤️</b></p>
+    </section>
+
+    <section id="letter" class="letter section">
+      <p class="eyebrow">A LETTER FOR YOU</p>
+      <h2>Dear Urja, ❤️</h2>
+      <p>Today is your day, and I just want you to know something…</p>
+      <p>You deserve the kind of happiness that stays, the kind of people who never make you question your worth, and the kind of moments that become beautiful memories. 🥹❤️</p>
+      <p>I hope this new chapter brings you countless reasons to smile, dreams that slowly become reality, and people who always remind you how special you are.</p>
+      <p>Never stop being the person you are. Keep smiling, keep shining, and keep that beautiful heart of yours the same. ✨</p>
+      <h3>Happy Birthday, Urja. 🎂❤️</h3>
+      <p>May this year be your most beautiful chapter yet.</p>
+    </section>
+
+    <section id="admin" class="admin section">
+      <h2>Private Admin</h2>
+      <p class="muted">Memories are stored in a private vault. Only authenticated visitors receive temporary viewing links.</p>
+      <div id="loginBox">
+        <input id="email" type="email" placeholder="Admin email">
+        <input id="password" type="password" placeholder="Password">
+        <button class="primary" onclick="login()">Admin Login</button>
+        <p id="authMsg"></p>
+      </div>
+      <div id="panel" class="hidden">
+        <input id="files" type="file" accept="image/*,video/mp4,video/webm,video/quicktime" multiple>
+        <button class="primary" onclick="uploadFiles()">Upload selected files</button>
+        <button onclick="logout()">Logout</button>
+        <p id="uploadMsg"></p>
+        <div id="adminList"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="modal" class="modal hidden" onclick="closeModal(event)">
+    <div class="modal-inner"><button class="close">×</button><div id="media"></div></div>
+  </div>
+
+  <footer>URJA ORIGINALS • Made with ❤️</footer>
+  <script src="app.js"></script>
+</body>
+</html>
