@@ -5,7 +5,14 @@ const SIGNED_URL_SECONDS = 300; // 5 minutes
 const client = (SUPABASE_URL.startsWith("http") && SUPABASE_ANON_KEY !== "PASTE_SUPABASE_ANON_KEY_HERE")
   ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   : null;
-
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 let memories = [];
 
 window.addEventListener("load", async () => {
