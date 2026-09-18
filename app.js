@@ -9,8 +9,8 @@ const client = (SUPABASE_URL.startsWith("http") && SUPABASE_ANON_KEY !== "PASTE_
 let memories = [];
 
 window.addEventListener("load", async () => {
-  setTimeout(() => document.getElementById("enterBtn").classList.remove("hidden"), 5600);
-  document.getElementById("enterBtn").onclick = () => {
+document.getElementById("enterBtn").classList.remove("hidden");
+document.getElementById("enterBtn").style.display = "inline-block";  document.getElementById("enterBtn").onclick = () => {
     document.getElementById("intro").style.display = "none";
   };
 
