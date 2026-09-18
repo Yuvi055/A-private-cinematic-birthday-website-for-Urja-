@@ -1,1 +1,41 @@
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#080808;color:#fff;font-family:Arial,sans-serif}header{position:fixed;top:0;left:0;right:0;z-index:20;padding:18px 5%;display:flex;justify-content:space-between;background:linear-gradient(#000,transparent)}.brand{color:#e50914;font-size:26px;font-weight:900;letter-spacing:3px}nav a{color:#ddd;text-decoration:none;margin-left:18px;font-size:13px}.hero{height:100vh;min-height:650px;position:relative;background:linear-gradient(90deg,rgba(0,0,0,.9),rgba(0,0,0,.1)),url('https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=1800&q=80') center/cover}.shade{position:absolute;inset:0;background:linear-gradient(0deg,#080808 0%,transparent 55%)}.hero-copy{position:absolute;left:6%;bottom:12%;max-width:620px}.eyebrow{font-size:12px;letter-spacing:3px;color:#bbb}.hero h1{font-size:clamp(55px,10vw,110px);margin:10px 0}.hero p{font-size:18px;line-height:1.6;color:#ddd}.primary{background:#fff;color:#000;border:0;border-radius:5px;padding:13px 22px;font-weight:700;cursor:pointer}.section{padding:55px 5%}.section h2{margin:25px 0 15px}.row{display:flex;gap:12px;overflow-x:auto;padding:10px 0 25px}.card{flex:0 0 190px;height:270px;background:#151515;border-radius:6px;overflow:hidden;position:relative;cursor:pointer;transition:.25s}.card:hover{transform:scale(1.05)}.card img,.card video{width:100%;height:100%;object-fit:cover}.card span{position:absolute;bottom:0;left:0;right:0;padding:35px 10px 10px;background:linear-gradient(transparent,#000);font-weight:700}.video{flex-basis:300px;height:170px}.story{min-height:75vh;display:grid;place-items:center;text-align:center;padding:70px 8%;background:radial-gradient(circle,#28121b,#080808 65%)}.story p{font-size:clamp(25px,4vw,45px);line-height:1.45}.story b{color:#ff4b6e}.letter{max-width:900px;margin:auto;text-align:center}.letter p{font-size:18px;line-height:1.8;color:#ddd}.letter h2{font-size:40px}.letter h3{font-size:30px}.admin{max-width:850px;margin:auto}.admin input{padding:13px;margin:5px;border-radius:5px;border:1px solid #444;background:#151515;color:#fff}.admin button{padding:12px 16px;margin:5px;border:0;border-radius:5px;cursor:pointer}.muted{color:#999}.hidden{display:none!important}.modal{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:100;display:grid;place-items:center;padding:20px}.modal-inner{max-width:950px;width:100%;position:relative;text-align:center}.modal img,.modal video{max-width:100%;max-height:80vh}.close{position:absolute;right:0;top:-45px;font-size:30px;background:none;color:#fff;border:0}.admin-item{padding:10px;border-bottom:1px solid #333;display:flex;justify-content:space-between}.admin-item button{background:#e50914;color:#fff}footer{text-align:center;padding:60px;color:#777}#intro{position:fixed;inset:0;background:#000;z-index:1000;display:grid;place-items:center;overflow:hidden;text-align:center}.intro-logo{font-size:clamp(65px,15vw,150px);font-weight:900;letter-spacing:8px;color:#e50914;opacity:0;animation:logo 2.2s 1s forwards}.intro-line{position:absolute;bottom:22%;opacity:0;color:#ddd;letter-spacing:2px;animation:fade 1.5s 3.1s forwards}.intro-line.delay{animation-delay:4.6s}.streak{position:absolute;height:3px;width:80vw;left:-100vw;background:linear-gradient(90deg,transparent,#ff1744,#ffd1dc,transparent);filter:blur(1px);transform:rotate(-12deg);animation:streak 2.2s ease-in-out forwards}.s2{animation-delay:.35s;top:35%}.s3{animation-delay:.7s;top:58%}.hidden.intro-btn{}.intro-line+.intro-line{}.intro-logo~#enterBtn{position:absolute;bottom:10%;animation:fade 1s 5.5s forwards;opacity:0}.intro-logo~#enterBtn.hidden{display:block}.enter-ready{display:block!important}@keyframes streak{0%{left:-100vw}55%,100%{left:120vw}}@keyframes logo{0%{opacity:0;transform:scale(.7);filter:blur(15px)}70%{opacity:1;filter:blur(0)}100%{opacity:1;transform:scale(1)}}@keyframes fade{to{opacity:1}}@media(max-width:600px){nav{display:none}.card{flex-basis:145px;height:210px}.video{flex-basis:260px;height:150px}.hero-copy{left:5%;right:5%}}
+/* URJA INTRO - TEXT OVERLAP FIX */
+#intro {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 22px !important;
+  text-align: center !important;
+  padding: 30px !important;
+}
+
+#intro .intro-logo {
+  position: relative !important;
+  margin: 0 0 10px 0 !important;
+  line-height: 1 !important;
+  z-index: 5 !important;
+}
+
+#intro .intro-line {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  margin: 0 !important;
+  width: min(90vw, 700px) !important;
+  text-align: center !important;
+  line-height: 1.5 !important;
+  z-index: 5 !important;
+}
+
+#intro .intro-line.delay {
+  margin-top: 4px !important;
+}
+
+#intro #enterBtn {
+  position: relative !important;
+  margin-top: 18px !important;
+  z-index: 10 !important;
+}
