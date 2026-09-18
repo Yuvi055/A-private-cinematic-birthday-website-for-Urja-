@@ -1,6 +1,5 @@
-const SUPABASE_URL = "PASTE_SUPABASE_URL_HERE";
-const SUPABASE_ANON_KEY = "PASTE_SUPABASE_ANON_KEY_HERE";
-const BUCKET = "urja-memories";
+const SUPABASE_URL = "https://euifwxbpmutuodqtgrus.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_3N78RDU-j93U3oO5FG3fQg_YRx5djWm";const BUCKET = "urja-memories";
 const SIGNED_URL_SECONDS = 300; // 5 minutes
 
 const client = (SUPABASE_URL.startsWith("http") && SUPABASE_ANON_KEY !== "PASTE_SUPABASE_ANON_KEY_HERE")
