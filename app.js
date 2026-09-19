@@ -7,7 +7,6 @@ const SUPABASE_URL = "https://euifwxbpmutuodqtgrus.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_3N78RDU-j93U3oO5FG3fQg_YRx5djWm";
 const BUCKET = "urja-memories";
 const SIGNED_URL_SECONDS = 300;
-
 const client = supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
@@ -39,28 +38,38 @@ async function ensureViewerSession() {
 
   return !!data?.session;
 }
-let memories = [];
+
+
+
+
+
 
 // ===============================
-// SECURITY
+// VIEWER SESSION
 // ===============================
 
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
+async function ensureViewerSession() {
+  const {
+    data: { session }
+  } = await client.auth.getSession();
 
-// ===============================
-// SIGNED URL
-// ===============================
+  if (session?.user) {
+    return true;
+  }
 
-async function signedUrl(path) {
-  const { data, error } = await client.storage
-    .from(BUCKET)
+  const { data, error } =
+    await client.auth.signInAnonymously();
+
+  if (error) {
+    console.error(
+      "Anonymous viewer login error:",
+      error
+    );
+    return false;
+  }
+
+  return !!data?.session;
+
     .createSignedUrl(path, SIGNED_URL_SECONDS);
 
   if (error) {
@@ -442,7 +451,7 @@ window.closeModal = closeModal;
 // ===============================
 
 async function renderAdmin() {
- async function renderAdmin() {
+ 
   const adminSection =
     document.getElementById("admin");
 
