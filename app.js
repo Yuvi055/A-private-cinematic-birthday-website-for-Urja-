@@ -6,6 +6,8 @@
 const SUPABASE_URL = "https://euifwxbpmutuodqtgrus.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_3N78RDU-j93U3oO5FG3fQg_YRx5djWm";
 const BUCKET = "urja-memories";
+const BACKGROUND_SONG_PATH =
+  "WhatsApp Video 2026-09-19 at 9.40.31 PM.mp4";
 const SIGNED_URL_SECONDS = 300;
 
 const client = supabase.createClient(
@@ -74,6 +76,25 @@ function setupIntro() {
         console.log("Video play:", error);
       }
     }
+      // START BACKGROUND SONG
+  const backgroundMusic = document.getElementById("backgroundMusic");
+
+  if (backgroundMusic) {
+    const musicUrl = await signedUrl(BACKGROUND_SONG_PATH);
+
+    if (musicUrl) {
+      backgroundMusic.src = musicUrl;
+      backgroundMusic.currentTime = 0;
+      backgroundMusic.muted = false;
+      backgroundMusic.volume = 0.45;
+
+      try {
+        await backgroundMusic.play();
+      } catch (error) {
+        console.log("Background music waiting:", error);
+      }
+    }
+  }
 
     intro.style.setProperty("display", "none", "important");
     intro.style.setProperty("visibility", "hidden", "important");
@@ -275,6 +296,37 @@ card.addEventListener("click", function (event) {
     item.title || "A Special Memory"
   );
 });
+    const memoryVideo = card.querySelector("video");
+
+if (memoryVideo) {
+  memoryVideo.addEventListener("play", function () {
+    const backgroundMusic = document.getElementById("backgroundMusic");
+
+    if (backgroundMusic) {
+      backgroundMusic.pause();
+    }
+  });
+
+  memoryVideo.addEventListener("pause", function () {
+    const backgroundMusic = document.getElementById("backgroundMusic");
+
+    if (
+      backgroundMusic &&
+      backgroundMusic.src &&
+      memoryVideo.currentTime < memoryVideo.duration
+    ) {
+      backgroundMusic.play().catch(() => {});
+    }
+  });
+
+  memoryVideo.addEventListener("ended", function () {
+    const backgroundMusic = document.getElementById("backgroundMusic");
+
+    if (backgroundMusic) {
+      backgroundMusic.play().catch(() => {});
+    }
+  });
+}
     container.appendChild(card);
   }
 }
