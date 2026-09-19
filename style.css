@@ -8,6 +8,10 @@
   gap: 22px !important;
   text-align: center !important;
   padding: 30px !important;
+
+
+
+  
 }
 
 #intro .intro-logo {
@@ -67,4 +71,164 @@ V
 /* FINAL INTRO EXIT FIX */
 #intro.intro-hidden {
   display: none !important;
+}
+/* ================================
+   URJA CINEMATIC NETFLIX OPENING
+================================ */
+
+#intro {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #000 !important;
+  z-index: 99999 !important;
+  padding: 0 !important;
+}
+
+#introVideo {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  z-index: 1 !important;
+  background: #000 !important;
+}
+
+.intro-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,.92) 0%,
+      rgba(0,0,0,.68) 38%,
+      rgba(0,0,0,.25) 75%,
+      rgba(0,0,0,.55) 100%
+    ),
+    linear-gradient(
+      0deg,
+      rgba(0,0,0,.88) 0%,
+      transparent 45%,
+      rgba(0,0,0,.35) 100%
+    ) !important;
+}
+
+.intro-content {
+  position: relative !important;
+  z-index: 5 !important;
+  width: min(90%, 600px) !important;
+  text-align: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.intro-brand {
+  color: #e50914 !important;
+  font-size: clamp(42px, 8vw, 82px) !important;
+  font-weight: 900 !important;
+  letter-spacing: 8px !important;
+  margin-bottom: 35px !important;
+  text-shadow: 0 4px 30px rgba(0,0,0,.8) !important;
+}
+
+.watch-title {
+  color: #fff !important;
+  font-size: clamp(22px, 4vw, 36px) !important;
+  font-weight: 500 !important;
+  letter-spacing: 2px !important;
+  margin-bottom: 30px !important;
+}
+
+.profile-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  cursor: pointer !important;
+  transition: transform .25s ease !important;
+}
+
+.profile-card:hover {
+  transform: scale(1.06) !important;
+}
+
+.profile-avatar {
+  width: 120px !important;
+  height: 120px !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: linear-gradient(135deg, #e50914, #7b0000) !important;
+  color: white !important;
+  font-size: 58px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 10px 40px rgba(0,0,0,.65) !important;
+  border: 2px solid rgba(255,255,255,.15) !important;
+}
+
+.profile-name {
+  color: #fff !important;
+  font-size: 20px !important;
+  margin-top: 14px !important;
+}
+
+.profile-subtitle {
+  color: #aaa !important;
+  font-size: 14px !important;
+  margin-top: 5px !important;
+}
+
+#intro .intro-start {
+  margin-top: 35px !important;
+  padding: 13px 28px !important;
+  border-radius: 4px !important;
+  border: none !important;
+  background: #fff !important;
+  color: #000 !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all .25s ease !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,.5) !important;
+}
+
+#intro .intro-start:hover {
+  background: #e50914 !important;
+  color: #fff !important;
+  transform: scale(1.05) !important;
+}
+
+@media (max-width: 600px) {
+  .intro-brand {
+    font-size: 46px !important;
+    letter-spacing: 6px !important;
+  }
+
+  .watch-title {
+    font-size: 23px !important;
+  }
+
+  .profile-avatar {
+    width: 100px !important;
+    height: 100px !important;
+    font-size: 46px !important;
+  }
+
+  .profile-name {
+    font-size: 18px !important;
+  }
+
+  #introVideo {
+    object-position: center !important;
+  }
 }
