@@ -585,3 +585,55 @@ section {
     font-size: 22px;
   }
 }
+/* HERO PHOTO BESIDE BIRTHDAY QUOTE */
+.hero-photo-wrap {
+  position: absolute !important;
+  right: 17% !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 420px !important;
+  height: 520px !important;
+  z-index: 3 !important;
+  overflow: hidden !important;
+  border-radius: 12px !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,.7) !important;
+}
+
+.hero-photo {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.hero-photo-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, #050505 0%, transparent 25%),
+    linear-gradient(to top, #050505 0%, transparent 25%);
+  pointer-events: none;
+}
+
+.hero-quote {
+  right: 4% !important;
+  z-index: 5 !important;
+}
+
+/* MOBILE */
+@media (max-width: 700px) {
+  .hero-photo-wrap {
+    right: 5% !important;
+    top: 38% !important;
+    width: 220px !important;
+    height: 300px !important;
+    opacity: .65 !important;
+  }
+
+  .hero-quote {
+    right: 2% !important;
+    top: 48% !important;
+    font-size: 25px !important;
+  }
+}
