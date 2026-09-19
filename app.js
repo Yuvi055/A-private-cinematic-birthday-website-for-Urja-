@@ -126,6 +126,11 @@ if (hero) {
 
   if (heroPhoto) {
     const heroUrl = await signedUrl(heroPhoto.path);
+    const heroPhotoElement = document.getElementById("heroPhoto");
+
+if (heroPhotoElement) {
+  heroPhotoElement.src = heroUrl;
+}
 
     if (heroUrl) {
       hero.style.backgroundImage =
