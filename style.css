@@ -1243,3 +1243,85 @@ section {
     font-size: 23px;
   }
 }
+/* =========================================
+   URJA — FULL SCREEN CINEMATIC VIEWER
+   ========================================= */
+
+#modal {
+  backdrop-filter: blur(12px) !important;
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(35,35,35,.92),
+      rgba(0,0,0,.97) 75%
+    ) !important;
+  z-index: 99999 !important;
+}
+
+#modal .modal-inner {
+  max-width: 1200px !important;
+  width: 94% !important;
+}
+
+#modal #media {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 18px !important;
+}
+
+#modal #media img,
+#modal #media video {
+  max-width: 92vw !important;
+  max-height: 78vh !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+  border-radius: 8px !important;
+  box-shadow:
+    0 25px 80px rgba(0,0,0,.85),
+    0 0 35px rgba(229,9,20,.10) !important;
+}
+
+#modal .modal-title {
+  color: #fff !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  letter-spacing: .5px !important;
+  text-shadow: 0 3px 15px rgba(0,0,0,.8) !important;
+}
+
+#modal .close {
+  top: 18px !important;
+  right: 18px !important;
+  z-index: 10 !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  background: rgba(255,255,255,.10) !important;
+  border: 1px solid rgba(255,255,255,.20) !important;
+  color: #fff !important;
+  font-size: 28px !important;
+  line-height: 40px !important;
+  cursor: pointer !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+#modal .close:hover {
+  background: #e50914 !important;
+  transform: scale(1.08) !important;
+}
+
+@media (max-width: 700px) {
+  #modal #media img,
+  #modal #media video {
+    max-width: 94vw !important;
+    max-height: 72vh !important;
+  }
+
+  #modal .modal-title {
+    font-size: 15px !important;
+  }
+}
