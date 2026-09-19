@@ -13,6 +13,32 @@ const client = supabase.createClient(
   SUPABASE_ANON_KEY
 );
 
+// ===============================
+// VIEWER SESSION
+// ===============================
+
+async function ensureViewerSession() {
+  const {
+    data: { session }
+  } = await client.auth.getSession();
+
+  if (session?.user) {
+    return true;
+  }
+
+  const { data, error } =
+    await client.auth.signInAnonymously();
+
+  if (error) {
+    console.error(
+      "Anonymous viewer login error:",
+      error
+    );
+    return false;
+  }
+
+  return !!data?.session;
+}
 let memories = [];
 
 // ===============================
@@ -416,6 +442,7 @@ window.closeModal = closeModal;
 // ===============================
 
 async function renderAdmin() {
+ async function renderAdmin() {
   const adminSection =
     document.getElementById("admin");
 
@@ -426,6 +453,14 @@ async function renderAdmin() {
   } = await client.auth.getUser();
 
   if (!user) {
+    adminSection.style.display = "none";
+    return;
+  }
+
+  const { data: isAdmin, error } =
+    await client.rpc("is_admin");
+
+  if (error || !isAdmin) {
     adminSection.style.display = "none";
     return;
   }
@@ -620,20 +655,22 @@ window.uploadFiles = uploadFiles;
 
 client.auth.onAuthStateChange(
   async function () {
-    await renderAdmin();
-  }
-);
-
-// ===============================
-// START APP
-// ===============================
-
 window.addEventListener(
   "load",
   async function () {
     console.log("URJA website loaded.");
 
     setupIntro();
+
+    const viewerReady =
+      await ensureViewerSession();
+
+    if (!viewerReady) {
+      console.error(
+        "Viewer session could not be created."
+      );
+      return;
+    }
 
     await loadMemories();
   }
