@@ -60,11 +60,10 @@ intro.style.display = "none";
     const main = document.querySelector("main");
 
     if (header) {
-      header.style.display = "flex";
-    }
+header.style.setProperty("display", "flex", "important");    }
 
     if (main) {
-      main.style.display = "block";
+      main.style.setProperty("display", "block", "important");
     }
 
     window.scrollTo({
