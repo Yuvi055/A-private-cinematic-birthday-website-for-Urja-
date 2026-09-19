@@ -77,7 +77,8 @@ function setupIntro() {
     behavior: "smooth"
   });
 };
-/* ---------- MEDIA ---------- */
+}
+  /* ---------- MEDIA ---------- */
 
 async function loadMemories() {
   if (!client) {
