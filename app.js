@@ -117,6 +117,33 @@ async function loadMemories() {
   }
 
   memories = data || [];
+  const hero = document.querySelector(".hero");
+
+if (hero) {
+  const heroPhoto = memories.find(
+    item => item.type === "photo"
+  );
+
+  if (heroPhoto) {
+    const heroUrl = await signedUrl(heroPhoto.path);
+
+    if (heroUrl) {
+      hero.style.backgroundImage =
+        `linear-gradient(
+          90deg,
+          rgba(0,0,0,0.98) 0%,
+          rgba(0,0,0,0.75) 38%,
+          rgba(0,0,0,0.20) 70%,
+          rgba(0,0,0,0.05) 100%
+        ),
+        url("${heroUrl}")`;
+
+      hero.style.backgroundSize = "cover";
+      hero.style.backgroundPosition = "right center";
+      hero.style.backgroundRepeat = "no-repeat";
+    }
+  }
+}
 
   const photos = memories.filter(
     item => item.type === "photo"
