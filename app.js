@@ -55,7 +55,7 @@ if (introVideo) {
   introVideo.volume = 1;
   introVideo.play().catch(() => {});
 }
-intro.classList.add("intro-hidden);
+intro.classList.add("intro-hidden");
     const header = document.querySelector("header");
     const main = document.querySelector("main");
 
