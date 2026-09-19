@@ -966,3 +966,189 @@ section {
     transform: rotate(-1deg) !important;
   }
 }
+/* =========================================
+   URJA — NETFLIX STYLE VIDEO FRAMES
+   ========================================= */
+
+#videos {
+  perspective: 1200px !important;
+}
+
+#videos .memory-card {
+  position: relative !important;
+  overflow: hidden !important;
+  background: #090909 !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(255,255,255,.16) !important;
+  box-shadow: 0 18px 45px rgba(0,0,0,.65) !important;
+  transition:
+    transform .45s ease,
+    box-shadow .45s ease,
+    filter .45s ease !important;
+}
+
+#videos .memory-card video {
+  width: 100% !important;
+  display: block !important;
+  border-radius: 5px !important;
+  object-fit: cover !important;
+  transition: transform .5s ease, filter .4s ease !important;
+}
+
+/* cinematic top highlight */
+#videos .memory-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.10),
+      transparent 25%,
+      transparent 75%,
+      rgba(0,0,0,.45)
+    );
+}
+
+/* Netflix-style red glow */
+#videos .memory-card::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  pointer-events: none;
+  z-index: -1;
+  box-shadow: 0 0 35px rgba(229,9,20,.10);
+}
+
+/* hover */
+#videos .memory-card:hover {
+  transform: translateY(-10px) scale(1.035) !important;
+  box-shadow:
+    0 28px 60px rgba(0,0,0,.85),
+    0 0 28px rgba(229,9,20,.16) !important;
+  filter: brightness(1.06) !important;
+}
+
+#videos .memory-card:hover video {
+  transform: scale(1.035) !important;
+  filter: contrast(1.04) saturate(1.06) !important;
+}
+
+
+/* =========================================
+   VIDEO 1 — NETFLIX ORIGINAL
+   ========================================= */
+
+#videos .memory-card:nth-child(1) {
+  border: 2px solid rgba(229,9,20,.8) !important;
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.7),
+    0 0 22px rgba(229,9,20,.22) !important;
+}
+
+
+/* =========================================
+   VIDEO 2 — CINEMA
+   ========================================= */
+
+#videos .memory-card:nth-child(2) {
+  border: 2px solid rgba(255,255,255,.35) !important;
+  border-radius: 3px !important;
+  box-shadow:
+    0 0 0 5px #050505,
+    0 20px 50px rgba(0,0,0,.85) !important;
+}
+
+
+/* =========================================
+   VIDEO 3 — ROMANTIC GLOW
+   ========================================= */
+
+#videos .memory-card:nth-child(3) {
+  border: 2px solid rgba(255,90,130,.55) !important;
+  border-radius: 18px !important;
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.65),
+    0 0 28px rgba(255,80,120,.14) !important;
+}
+
+
+/* =========================================
+   VIDEO 4 — FILM STRIP
+   ========================================= */
+
+#videos .memory-card:nth-child(4) {
+  border: 7px solid #171717 !important;
+  border-radius: 2px !important;
+  box-shadow:
+    0 0 0 1px #444,
+    0 20px 55px rgba(0,0,0,.85) !important;
+}
+
+
+/* =========================================
+   VIDEO 5 — LUXURY
+   ========================================= */
+
+#videos .memory-card:nth-child(5) {
+  border: 1px solid rgba(255,255,255,.65) !important;
+  border-radius: 10px !important;
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,.05),
+    0 20px 55px rgba(0,0,0,.85) !important;
+}
+
+
+/* =========================================
+   VIDEO 6 — BIRTHDAY SPECIAL
+   ========================================= */
+
+#videos .memory-card:nth-child(6) {
+  border: 2px solid rgba(201,162,39,.75) !important;
+  border-radius: 12px !important;
+  box-shadow:
+    0 18px 50px rgba(0,0,0,.75),
+    0 0 25px rgba(201,162,39,.14) !important;
+}
+
+
+/* =========================================
+   VIDEO TITLE
+   ========================================= */
+
+#videos .memory-title {
+  position: relative;
+  z-index: 5;
+  padding: 12px 10px 14px !important;
+  text-align: center !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: .3px !important;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,.15),
+    #080808
+  ) !important;
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 700px) {
+
+  #videos {
+    perspective: none !important;
+  }
+
+  #videos .memory-card {
+    transform: none !important;
+  }
+
+  #videos .memory-card:hover {
+    transform: translateY(-5px) scale(1.02) !important;
+  }
+}
