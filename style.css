@@ -522,3 +522,66 @@ section {
     transform: none !important;
   }
 }
+/* RIGHT SIDE BIRTHDAY QUOTE */
+.hero-quote {
+  position: absolute;
+  right: 5%;
+  top: 48%;
+  transform: translateY(-50%);
+  z-index: 10;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 260px;
+
+  color: #ffffff;
+  font-family: "Brush Script MT", "Segoe Script", cursive;
+  font-size: clamp(30px, 3.2vw, 52px);
+  line-height: 0.95;
+  text-align: center;
+
+  text-shadow:
+    0 3px 12px rgba(0,0,0,0.95),
+    0 0 25px rgba(0,0,0,0.7);
+
+  pointer-events: none;
+}
+
+.hero-quote span:nth-child(1) {
+  transform: translateX(-15px);
+}
+
+.hero-quote span:nth-child(2) {
+  transform: translateX(8px);
+}
+
+.hero-quote span:nth-child(3) {
+  transform: translateX(15px);
+}
+
+.hero-quote span:nth-child(4) {
+  transform: translateX(-5px);
+}
+
+.hero-quote b {
+  display: block;
+  margin-top: 14px;
+  font-family: Arial, sans-serif;
+  font-size: 30px;
+  font-weight: normal;
+}
+
+@media (max-width: 700px) {
+  .hero-quote {
+    right: 3%;
+    top: 52%;
+    width: 150px;
+    font-size: 27px;
+  }
+
+  .hero-quote b {
+    font-size: 22px;
+  }
+}
