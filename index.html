@@ -33,9 +33,20 @@
       <div class="profile-subtitle">The Birthday Girl ❤️</div>
     </div>
 
-    <button id="enterBtn" class="primary intro-start">
-      ▶ START WATCHING
-    </button>
+    <button
+  id="enterBtn"
+  class="primary intro-start"
+  type="button"
+  onclick="
+    document.getElementById('intro').style.setProperty('display','none','important');
+    document.getElementById('intro').style.setProperty('visibility','hidden','important');
+    document.getElementById('intro').style.setProperty('pointer-events','none','important');
+    document.querySelector('header')?.style.setProperty('display','flex','important');
+    document.querySelector('main')?.style.setProperty('display','block','important');
+    document.body.style.overflow='';
+  ">
+  ▶ START WATCHING
+</button>
 
   </div>
 
