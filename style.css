@@ -64,3 +64,7 @@
 V
   z-index: 999 !important;
 }
+/* FINAL INTRO EXIT FIX */
+#intro.intro-hidden {
+  display: none !important;
+}
