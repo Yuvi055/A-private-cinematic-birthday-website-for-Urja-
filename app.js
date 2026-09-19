@@ -62,7 +62,17 @@ function setupIntro() {
 
   enterBtn.classList.remove("hidden");
   enterBtn.style.display = "inline-block";
+// Keep the website content hidden while intro is active
+const header = document.querySelector("header");
+const main = document.querySelector("main");
 
+if (header) {
+  header.style.setProperty("display", "none", "important");
+}
+
+if (main) {
+  main.style.setProperty("display", "none", "important");
+}
   enterBtn.onclick = async function () {
     const introVideo = document.getElementById("introVideo");
 
