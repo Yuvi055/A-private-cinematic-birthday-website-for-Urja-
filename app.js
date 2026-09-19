@@ -20,11 +20,12 @@ document.getElementById("enterBtn").classList.remove("hidden");
 document.getElementById("enterBtn").style.display = "inline-block";
 
 document.getElementById("enterBtn").onclick = () => {
-document.getElementById("intro").classList.add("intro-hidden");  document.querySelector("header").style.display = "flex";
+  document.getElementById("intro")?.remove();
+  document.querySelector("header").style.display = "flex";
   document.querySelector("main").style.display = "block";
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
-
+};
   if (!client) return;
 
   // The birthday viewer must authenticate before private media can be signed.
