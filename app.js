@@ -48,31 +48,35 @@ function setupIntro() {
   enterBtn.style.display = "inline-block";
 
   enterBtn.onclick = () => {
-    const introVideo = document.getElementById("introVideo");
+  const introVideo = document.getElementById("introVideo");
 
-if (introVideo) {
-  introVideo.muted = false;
-  introVideo.volume = 1;
-  introVideo.play().catch(() => {});
-}
-intro.classList.add("intro-hidden");
-    const header = document.querySelector("header");
-    const main = document.querySelector("main");
+  if (introVideo) {
+    introVideo.muted = false;
+    introVideo.volume = 1;
+    introVideo.play().catch(() => {});
+  }
 
-    if (header) {
-header.style.setProperty("display", "flex", "important");    }
+  const header = document.querySelector("header");
+  const main = document.querySelector("main");
 
-    if (main) {
-      main.style.setProperty("display", "block", "important");
-    }
+  intro.classList.add("intro-hidden");
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  };
-}
+  if (header) {
+    header.style.setProperty("display", "flex", "important");
+    header.style.setProperty("visibility", "visible", "important");
+  }
 
+  if (main) {
+    main.style.setProperty("display", "block", "important");
+    main.style.setProperty("visibility", "visible", "important");
+    main.style.setProperty("opacity", "1", "important");
+  }
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+};
 /* ---------- MEDIA ---------- */
 
 async function loadMemories() {
