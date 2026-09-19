@@ -55,8 +55,7 @@ if (introVideo) {
   introVideo.volume = 1;
   introVideo.play().catch(() => {});
 }
-    intro.remove();
-
+intro.style.display = "none";
     const header = document.querySelector("header");
     const main = document.querySelector("main");
 
