@@ -48,6 +48,13 @@ function setupIntro() {
   enterBtn.style.display = "inline-block";
 
   enterBtn.onclick = () => {
+    const introVideo = document.getElementById("introVideo");
+
+if (introVideo) {
+  introVideo.muted = false;
+  introVideo.volume = 1;
+  introVideo.play().catch(() => {});
+}
     intro.remove();
 
     const header = document.querySelector("header");
