@@ -6,8 +6,6 @@
 const SUPABASE_URL = "https://euifwxbpmutuodqtgrus.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_3N78RDU-j93U3oO5FG3fQg_YRx5djWm";
 const BUCKET = "urja-memories";
-const BACKGROUND_SONG_PATH =
-  "WhatsApp Video 2026-09-19 at 9.40.31 PM.mp4";
 const SIGNED_URL_SECONDS = 300;
 
 const client = supabase.createClient(
@@ -60,89 +58,69 @@ function setupIntro() {
     return;
   }
 
-  enterBtn.classList.remove("hidden");
-  enterBtn.style.display = "inline-block";
-// Keep the website content hidden while intro is active
-const header = document.querySelector("header");
-const main = document.querySelector("main");
-
-if (header) {
-  header.style.setProperty("display", "none", "important");
-}
-
-if (main) {
-  main.style.setProperty("display", "none", "important");
-}
-enterBtn.onclick = function () {
-
-  // Hide intro immediately
-  intro.style.setProperty("display", "none", "important");
-  intro.style.setProperty("visibility", "hidden", "important");
-  intro.style.setProperty("pointer-events", "none", "important");
-
-  // Show website
+  // Keep website locked behind intro
   const header = document.querySelector("header");
   const main = document.querySelector("main");
 
   if (header) {
-    header.style.setProperty("display", "flex", "important");
-    header.style.setProperty("visibility", "visible", "important");
-    header.style.setProperty("opacity", "1", "important");
+    header.style.setProperty("display", "none", "important");
   }
 
   if (main) {
-    main.style.setProperty("display", "block", "important");
-    main.style.setProperty("visibility", "visible", "important");
-    main.style.setProperty("opacity", "1", "important");
+    main.style.setProperty("display", "none", "important");
   }
 
-  // Start intro video without waiting
-  const introVideo = document.getElementById("introVideo");
+  document.body.style.overflow = "hidden";
 
-  if (introVideo) {
-    introVideo.muted = false;
-    introVideo.volume = 1;
+  enterBtn.classList.remove("hidden");
+  enterBtn.style.display = "inline-block";
 
-    introVideo.play().catch((error) => {
-      console.log("Intro video play:", error);
-    });
-  }
+  enterBtn.onclick = function () {
 
-  // Start background music without waiting
-  const backgroundMusic =
-    document.getElementById("backgroundMusic");
+    // Hide intro immediately
+    intro.style.setProperty("display", "none", "important");
+    intro.style.setProperty("visibility", "hidden", "important");
+    intro.style.setProperty("pointer-events", "none", "important");
 
-  if (backgroundMusic) {
+    // Show website immediately
+    if (header) {
+      header.style.setProperty("display", "flex", "important");
+      header.style.setProperty("visibility", "visible", "important");
+      header.style.setProperty("opacity", "1", "important");
+    }
 
-    signedUrl(BACKGROUND_SONG_PATH).then((musicUrl) => {
+    if (main) {
+      main.style.setProperty("display", "block", "important");
+      main.style.setProperty("visibility", "visible", "important");
+      main.style.setProperty("opacity", "1", "important");
+    }
 
-      if (!musicUrl) return;
+    document.body.style.overflow = "";
 
-      backgroundMusic.src = musicUrl;
-      backgroundMusic.currentTime = 0;
-      backgroundMusic.muted = false;
-      backgroundMusic.volume = 0.45;
+    // Start intro video without waiting
+    const introVideo = document.getElementById("introVideo");
 
-      backgroundMusic.play().catch((error) => {
-        console.log("Background music:", error);
+    if (introVideo) {
+      introVideo.muted = false;
+      introVideo.volume = 1;
+
+      introVideo.play().catch((error) => {
+        console.log("Intro video play:", error);
       });
+    }
 
-    }).catch((error) => {
-      console.log("Background music error:", error);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
     });
-  }
+  };
+}
 
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
-};
 // ===============================
 // LOAD MEMORIES
 // ===============================
 
 async function loadMemories() {
-
   const { data, error } = await client
     .from("memories")
     .select("*")
@@ -154,45 +132,52 @@ async function loadMemories() {
   }
 
   memories = data || [];
+
+  // ===============================
+  // HERO PHOTO
+  // ===============================
+
   const hero = document.querySelector(".hero");
 
-if (hero) {
-  const heroPhoto = memories.find(
-    item => item.type === "photo"
-  );
+  if (hero) {
+    const heroPhoto = memories.find(
+      (item) => item.type === "photo"
+    );
 
-  if (heroPhoto) {
-    const heroUrl = await signedUrl(heroPhoto.path);
-    const heroPhotoElement = document.getElementById("heroPhoto");
+    if (heroPhoto) {
+      const heroUrl = await signedUrl(heroPhoto.path);
 
-if (heroPhotoElement) {
-  heroPhotoElement.src = heroUrl;
-}
+      if (heroUrl) {
+        const heroPhotoElement =
+          document.getElementById("heroPhoto");
 
-    if (heroUrl) {
-      hero.style.backgroundImage =
-        `linear-gradient(
-          90deg,
-          rgba(0,0,0,0.98) 0%,
-          rgba(0,0,0,0.75) 38%,
-          rgba(0,0,0,0.20) 70%,
-          rgba(0,0,0,0.05) 100%
-        ),
-        url("${heroUrl}")`;
+        if (heroPhotoElement) {
+          heroPhotoElement.src = heroUrl;
+        }
 
-      hero.style.backgroundSize = "cover";
-      hero.style.backgroundPosition = "right center";
-      hero.style.backgroundRepeat = "no-repeat";
+        hero.style.backgroundImage =
+          `linear-gradient(
+            90deg,
+            rgba(0,0,0,0.98) 0%,
+            rgba(0,0,0,0.75) 38%,
+            rgba(0,0,0,0.20) 70%,
+            rgba(0,0,0,0.05) 100%
+          ),
+          url("${heroUrl}")`;
+
+        hero.style.backgroundSize = "cover";
+        hero.style.backgroundPosition = "right center";
+        hero.style.backgroundRepeat = "no-repeat";
+      }
     }
   }
-}
 
   const photos = memories.filter(
-    item => item.type === "photo"
+    (item) => item.type === "photo"
   );
 
   const videos = memories.filter(
-    item => item.type === "video"
+    (item) => item.type === "video"
   );
 
   await renderMedia("photos", photos);
@@ -207,13 +192,13 @@ if (heroPhotoElement) {
 // ===============================
 
 async function loadIntroVideo() {
-
-  const introVideo = document.getElementById("introVideo");
+  const introVideo =
+    document.getElementById("introVideo");
 
   if (!introVideo) return;
 
   const firstVideo = memories.find(
-    item => item.type === "video"
+    (item) => item.type === "video"
   );
 
   if (!firstVideo) {
@@ -226,13 +211,14 @@ async function loadIntroVideo() {
   if (!url) return;
 
   introVideo.src = url;
+  introVideo.muted = true;
+  introVideo.playsInline = true;
   introVideo.load();
 
-  try {
-    await introVideo.play();
-  } catch (error) {
-    console.log("Autoplay waiting for interaction.");
-  }
+  // Safe muted autoplay
+  introVideo.play().catch(() => {
+    console.log("Intro autoplay waiting.");
+  });
 }
 
 // ===============================
@@ -240,8 +226,8 @@ async function loadIntroVideo() {
 // ===============================
 
 async function renderMedia(containerId, items) {
-
-  const container = document.getElementById(containerId);
+  const container =
+    document.getElementById(containerId);
 
   if (!container) {
     console.log("Container not found:", containerId);
@@ -257,7 +243,6 @@ async function renderMedia(containerId, items) {
   }
 
   for (const item of items) {
-
     const url = await signedUrl(item.path);
 
     if (!url) continue;
@@ -266,7 +251,6 @@ async function renderMedia(containerId, items) {
     card.className = "memory-card";
 
     if (item.type === "video") {
-
       card.innerHTML = `
         <div class="media-wrapper">
           <video
@@ -278,78 +262,50 @@ async function renderMedia(containerId, items) {
         </div>
 
         <div class="memory-title">
-          ${escapeHtml(item.title || "A Special Memory")}
+          ${escapeHtml(
+            item.title || "A Special Memory"
+          )}
         </div>
       `;
-
     } else {
-
       card.innerHTML = `
         <div class="media-wrapper">
           <img
             src="${escapeHtml(url)}"
-            alt="${escapeHtml(item.title || "Urja Memory")}"
+            alt="${escapeHtml(
+              item.title || "Urja Memory"
+            )}"
             loading="lazy">
         </div>
 
         <div class="memory-title">
-          ${escapeHtml(item.title || "A Special Memory")}
+          ${escapeHtml(
+            item.title || "A Special Memory"
+          )}
         </div>
       `;
     }
-card.addEventListener("click", function (event) {
 
-  if (
-    item.type === "video" &&
-    event.target.closest("video")
-  ) {
-    return;
-  }
+    // Full-screen viewer
+    card.addEventListener("click", function (event) {
+      if (
+        item.type === "video" &&
+        event.target.closest("video")
+      ) {
+        return;
+      }
 
-  openMediaModal(
-    url,
-    item.type,
-    item.title || "A Special Memory"
-  );
-});
-    const memoryVideo = card.querySelector("video");
+      openMediaModal(
+        url,
+        item.type,
+        item.title || "A Special Memory"
+      );
+    });
 
-if (memoryVideo) {
-  memoryVideo.addEventListener("play", function () {
-    const backgroundMusic = document.getElementById("backgroundMusic");
-
-    if (backgroundMusic) {
-      backgroundMusic.pause();
-    }
-  });
-
-  memoryVideo.addEventListener("pause", function () {
-    const backgroundMusic = document.getElementById("backgroundMusic");
-
-    if (
-      backgroundMusic &&
-      backgroundMusic.src &&
-      memoryVideo.currentTime < memoryVideo.duration
-    ) {
-      backgroundMusic.play().catch(() => {});
-    }
-  });
-
-  memoryVideo.addEventListener("ended", function () {
-    const backgroundMusic = document.getElementById("backgroundMusic");
-
-    if (backgroundMusic) {
-      backgroundMusic.play().catch(() => {});
-    }
-  });
-}
     container.appendChild(card);
   }
 }
 
-// ===============================
-// ADMIN
-// ===============================
 // ===============================
 // FULL SCREEN MEDIA VIEWER
 // ===============================
@@ -384,7 +340,8 @@ function openMediaModal(url, type, title) {
 
   const titleElement = document.createElement("div");
   titleElement.className = "modal-title";
-  titleElement.textContent = title || "Urja Memory";
+  titleElement.textContent =
+    title || "Urja Memory";
 
   media.appendChild(titleElement);
 
@@ -419,42 +376,53 @@ function closeModal(event) {
   }
 }
 
-document.addEventListener("keydown", function (event) {
-  if (event.key === "Escape") {
-    const modal = document.getElementById("modal");
+document.addEventListener(
+  "keydown",
+  function (event) {
+    if (event.key === "Escape") {
+      const modal = document.getElementById("modal");
 
-    if (modal && !modal.classList.contains("hidden")) {
-      modal.classList.add("hidden");
+      if (
+        modal &&
+        !modal.classList.contains("hidden")
+      ) {
+        modal.classList.add("hidden");
 
-      const media = document.getElementById("media");
+        const media =
+          document.getElementById("media");
 
-      if (media) {
-        const video = media.querySelector("video");
+        if (media) {
+          const video =
+            media.querySelector("video");
 
-        if (video) {
-          video.pause();
+          if (video) {
+            video.pause();
+          }
+
+          media.innerHTML = "";
         }
 
-        media.innerHTML = "";
+        document.body.style.overflow = "";
       }
-
-      document.body.style.overflow = "";
     }
   }
-});
+);
 
 window.openMediaModal = openMediaModal;
 window.closeModal = closeModal;
-async function renderAdmin() {
 
-  const adminSection = document.getElementById("admin");
+// ===============================
+// ADMIN
+// ===============================
+
+async function renderAdmin() {
+  const adminSection =
+    document.getElementById("admin");
 
   if (!adminSection) return;
 
   const {
-    data: {
-      user
-    }
+    data: { user }
   } = await client.auth.getUser();
 
   if (!user) {
@@ -470,7 +438,6 @@ async function renderAdmin() {
 // ===============================
 
 async function loginUser() {
-
   const emailInput =
     document.getElementById("email") ||
     document.getElementById("loginEmail");
@@ -481,7 +448,8 @@ async function loginUser() {
 
   const message =
     document.getElementById("loginMsg") ||
-    document.getElementById("loginMessage");
+    document.getElementById("loginMessage") ||
+    document.getElementById("authMsg");
 
   if (!emailInput || !passwordInput) {
     console.error("Login fields not found.");
@@ -491,13 +459,13 @@ async function loginUser() {
   const email = emailInput.value.trim();
   const password = passwordInput.value;
 
-  const { error } = await client.auth.signInWithPassword({
-    email,
-    password
-  });
+  const { error } =
+    await client.auth.signInWithPassword({
+      email,
+      password
+    });
 
   if (error) {
-
     if (message) {
       message.textContent = error.message;
     }
@@ -513,41 +481,38 @@ async function loginUser() {
   await loadMemories();
 }
 
-// Make available to HTML buttons
 window.loginUser = loginUser;
+window.login = loginUser;
 
 // ===============================
 // LOGOUT
 // ===============================
 
 async function logoutUser() {
-
   await client.auth.signOut();
-
   location.reload();
 }
 
 window.logoutUser = logoutUser;
+window.logout = logoutUser;
 
 // ===============================
 // UPLOAD
 // ===============================
 
 async function uploadFiles() {
-
-  const input = document.getElementById("files");
+  const input =
+    document.getElementById("files");
 
   const message =
     document.getElementById("uploadMsg") ||
     document.getElementById("uploadMessage");
 
   if (!input || !input.files.length) {
-
     if (message) {
       message.textContent =
         "Please select a file first.";
     }
-
     return;
   }
 
@@ -557,28 +522,23 @@ async function uploadFiles() {
   }
 
   for (const file of input.files) {
-
     const isMedia =
       file.type.startsWith("image/") ||
       file.type.startsWith("video/");
 
     if (!isMedia) {
-
       if (message) {
         message.textContent =
           `Skipped ${file.name}: unsupported file type`;
       }
-
       continue;
     }
 
     if (file.size > 50 * 1024 * 1024) {
-
       if (message) {
         message.textContent =
           `Skipped ${file.name}: file is over 50 MB`;
       }
-
       continue;
     }
 
@@ -602,7 +562,6 @@ async function uploadFiles() {
       });
 
     if (upload.error) {
-
       console.error(
         "Storage upload error:",
         upload.error
@@ -625,7 +584,6 @@ async function uploadFiles() {
       });
 
     if (insert.error) {
-
       await client.storage
         .from(BUCKET)
         .remove([path]);
@@ -670,12 +628,13 @@ client.auth.onAuthStateChange(
 // START APP
 // ===============================
 
-window.addEventListener("load", async function () {
+window.addEventListener(
+  "load",
+  async function () {
+    console.log("URJA website loaded.");
 
-  console.log("URJA website loaded.");
+    setupIntro();
 
-  setupIntro();
-
-  await loadMemories();
-
-});
+    await loadMemories();
+  }
+);
