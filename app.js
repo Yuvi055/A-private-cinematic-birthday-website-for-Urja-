@@ -62,8 +62,6 @@ function setupIntro() {
   enterBtn.style.display = "inline-block";
 
   enterBtn.onclick = async function () {
-
-    // Play intro video with sound after user interaction
     const introVideo = document.getElementById("introVideo");
 
     if (introVideo) {
@@ -77,10 +75,10 @@ function setupIntro() {
       }
     }
 
-    // Hide intro
-    intro.classList.add("intro-hidden");
+    intro.style.setProperty("display", "none", "important");
+    intro.style.setProperty("visibility", "hidden", "important");
+    intro.style.setProperty("pointer-events", "none", "important");
 
-    // Show main website
     const header = document.querySelector("header");
     const main = document.querySelector("main");
 
@@ -102,7 +100,6 @@ function setupIntro() {
     });
   };
 }
-
 // ===============================
 // LOAD MEMORIES
 // ===============================
