@@ -637,3 +637,332 @@ section {
     font-size: 25px !important;
   }
 }
+/* =========================================
+   URJA — AESTHETIC MEMORY FRAMES
+   ========================================= */
+
+#photos .memory-card {
+  position: relative !important;
+  background: #111 !important;
+  padding: 8px !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  box-shadow: 0 12px 35px rgba(0,0,0,.45) !important;
+}
+
+/* Photo itself */
+#photos .memory-card img {
+  border-radius: 9px !important;
+  transition: transform .5s ease, filter .5s ease !important;
+}
+
+/* Hover cinematic effect */
+#photos .memory-card:hover img {
+  transform: scale(1.06) !important;
+  filter: brightness(1.08) contrast(1.04) !important;
+}
+
+/* FRAME 1 — Elegant */
+#photos .memory-card:nth-child(1) {
+  border: 2px solid rgba(255,255,255,.55) !important;
+  box-shadow:
+    0 0 0 4px #111,
+    0 15px 40px rgba(0,0,0,.7) !important;
+}
+
+/* FRAME 2 — Romantic */
+#photos .memory-card:nth-child(2) {
+  border: 2px solid rgba(255,105,140,.55) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 0 25px rgba(255,70,110,.18) !important;
+}
+
+/* FRAME 3 — Polaroid */
+#photos .memory-card:nth-child(3) {
+  background: #f5f2ec !important;
+  padding: 10px 10px 35px !important;
+  border-radius: 3px !important;
+  transform: rotate(-1.5deg);
+}
+
+#photos .memory-card:nth-child(3) img {
+  border-radius: 0 !important;
+}
+
+/* FRAME 4 — Cinematic */
+#photos .memory-card:nth-child(4) {
+  border-radius: 4px !important;
+  border: 1px solid rgba(255,255,255,.3) !important;
+  box-shadow:
+    0 0 0 5px #080808,
+    0 18px 45px rgba(0,0,0,.8) !important;
+}
+
+/* FRAME 5 — Golden Memory */
+#photos .memory-card:nth-child(5) {
+  border: 2px solid #c9a227 !important;
+  box-shadow:
+    0 0 20px rgba(201,162,39,.18),
+    0 15px 40px rgba(0,0,0,.7) !important;
+}
+
+/* FRAME 6 — Soft Dream */
+#photos .memory-card:nth-child(6) {
+  border-radius: 28px !important;
+  border: 2px solid rgba(255,255,255,.25) !important;
+  box-shadow: 0 15px 45px rgba(255,255,255,.08) !important;
+}
+
+/* FRAME 7 — Film Strip */
+#photos .memory-card:nth-child(7) {
+  border-radius: 2px !important;
+  border: 6px solid #171717 !important;
+  box-shadow:
+    0 0 0 1px #444,
+    0 15px 40px rgba(0,0,0,.75) !important;
+}
+
+/* FRAME 8 — Love Letter */
+#photos .memory-card:nth-child(8) {
+  border: 2px solid rgba(255,180,200,.5) !important;
+  border-radius: 10px !important;
+  box-shadow:
+    0 10px 35px rgba(255,100,150,.12) !important;
+}
+
+/* FRAME 9 — Luxury */
+#photos .memory-card:nth-child(9) {
+  border: 1px solid rgba(255,255,255,.5) !important;
+  border-radius: 8px !important;
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,.06),
+    0 20px 50px rgba(0,0,0,.8) !important;
+}
+
+/* FRAME 10 — Memory Scrapbook */
+#photos .memory-card:nth-child(10) {
+  border: 5px solid #eee !important;
+  border-radius: 6px !important;
+  box-shadow:
+    0 0 0 2px #555,
+    0 15px 35px rgba(0,0,0,.7) !important;
+}
+
+/* Keep titles clean */
+#photos .memory-title {
+  padding: 10px 8px !important;
+  text-align: center !important;
+  font-size: 12px !important;
+}
+/* =========================================
+   URJA — PREMIUM PINTEREST / NETFLIX MEMORY WALL
+   ========================================= */
+
+#photos {
+  perspective: 1200px !important;
+}
+
+/* Premium card base */
+#photos .memory-card {
+  position: relative !important;
+  overflow: visible !important;
+  background: #111 !important;
+  border-radius: 10px !important;
+  padding: 7px !important;
+  border: 1px solid rgba(255,255,255,.16) !important;
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.55),
+    0 2px 8px rgba(255,255,255,.04) inset !important;
+  transform-style: preserve-3d !important;
+  transition:
+    transform .45s cubic-bezier(.2,.8,.2,1),
+    box-shadow .45s ease,
+    filter .45s ease !important;
+}
+
+/* Photo */
+#photos .memory-card img {
+  width: 100% !important;
+  display: block !important;
+  border-radius: 6px !important;
+  transition:
+    transform .55s cubic-bezier(.2,.8,.2,1),
+    filter .45s ease !important;
+}
+
+/* Soft glass highlight */
+#photos .memory-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.18),
+      transparent 30%
+    );
+  opacity: .45;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Tiny cinematic glow */
+#photos .memory-card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  box-shadow: 0 0 35px rgba(255,80,120,.08);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Hover */
+#photos .memory-card:hover {
+  transform:
+    translateY(-12px)
+    rotateX(2deg)
+    scale(1.045) !important;
+
+  box-shadow:
+    0 30px 65px rgba(0,0,0,.75),
+    0 0 30px rgba(255,80,120,.12) !important;
+
+  filter: brightness(1.08) !important;
+}
+
+#photos .memory-card:hover img {
+  transform: scale(1.045) !important;
+  filter: saturate(1.08) contrast(1.03) !important;
+}
+
+/* =========================================
+   INDIVIDUAL MEMORY PERSONALITIES
+   ========================================= */
+
+/* 1 — Elegant */
+#photos .memory-card:nth-child(1) {
+  transform: rotate(-1deg);
+  border-color: rgba(255,255,255,.45) !important;
+}
+
+/* 2 — Romantic */
+#photos .memory-card:nth-child(2) {
+  transform: rotate(1.4deg);
+  border-color: rgba(255,105,140,.5) !important;
+  border-radius: 18px !important;
+}
+
+/* 3 — Polaroid */
+#photos .memory-card:nth-child(3) {
+  background: #f4f0e8 !important;
+  padding: 9px 9px 32px !important;
+  border-radius: 3px !important;
+  transform: rotate(-2deg);
+}
+
+#photos .memory-card:nth-child(3) img {
+  border-radius: 1px !important;
+}
+
+#photos .memory-card:nth-child(3) .memory-title {
+  color: #222 !important;
+  font-family: "Segoe Script", cursive !important;
+}
+
+/* 4 — Cinematic */
+#photos .memory-card:nth-child(4) {
+  transform: rotate(.8deg);
+  border: 2px solid rgba(255,255,255,.25) !important;
+  border-radius: 4px !important;
+}
+
+/* 5 — Golden */
+#photos .memory-card:nth-child(5) {
+  transform: rotate(-1.2deg);
+  border: 2px solid rgba(201,162,39,.7) !important;
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.6),
+    0 0 25px rgba(201,162,39,.13) !important;
+}
+
+/* 6 — Dreamy */
+#photos .memory-card:nth-child(6) {
+  transform: rotate(1.8deg);
+  border-radius: 25px !important;
+  border-color: rgba(255,255,255,.3) !important;
+}
+
+/* 7 — Film */
+#photos .memory-card:nth-child(7) {
+  transform: rotate(-.8deg);
+  background: #080808 !important;
+  border: 6px solid #171717 !important;
+  border-radius: 3px !important;
+}
+
+/* 8 — Love Letter */
+#photos .memory-card:nth-child(8) {
+  transform: rotate(1.2deg);
+  border: 2px solid rgba(255,170,200,.45) !important;
+  border-radius: 12px !important;
+}
+
+/* 9 — Luxury */
+#photos .memory-card:nth-child(9) {
+  transform: rotate(-1.5deg);
+  border: 1px solid rgba(255,255,255,.55) !important;
+  border-radius: 8px !important;
+}
+
+/* 10 — Scrapbook */
+#photos .memory-card:nth-child(10) {
+  transform: rotate(2deg);
+  background: #f1eee8 !important;
+  border: 5px solid #eee !important;
+  border-radius: 5px !important;
+}
+
+#photos .memory-card:nth-child(10) .memory-title {
+  color: #222 !important;
+  font-family: "Segoe Script", cursive !important;
+}
+
+/* =========================================
+   TITLES
+   ========================================= */
+
+#photos .memory-title {
+  position: relative;
+  z-index: 4;
+  padding: 11px 8px 12px !important;
+  text-align: center !important;
+  font-size: 12px !important;
+  letter-spacing: .3px !important;
+}
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 700px) {
+
+  #photos {
+    perspective: none !important;
+  }
+
+  #photos .memory-card {
+    transform: none !important;
+  }
+
+  #photos .memory-card:hover {
+    transform: translateY(-5px) scale(1.02) !important;
+  }
+
+  #photos .memory-card:nth-child(3),
+  #photos .memory-card:nth-child(10) {
+    transform: rotate(-1deg) !important;
+  }
+}
