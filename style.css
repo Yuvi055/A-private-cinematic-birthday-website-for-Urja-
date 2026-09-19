@@ -235,3 +235,290 @@ pointer-events: none !important;
     object-position: center !important;
   }
 }
+/* =================================================
+   URJA — CINEMATIC STREAMING UI
+   ================================================= */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #050505 !important;
+  color: #fff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  overflow-x: hidden;
+}
+
+/* ---------- HEADER ---------- */
+
+header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 68px !important;
+  padding: 0 5% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,.95),
+    rgba(0,0,0,.45),
+    transparent
+  ) !important;
+  z-index: 500 !important;
+  border: 0 !important;
+}
+
+header .brand,
+.brand {
+  color: #e50914 !important;
+  font-size: 28px !important;
+  font-weight: 900 !important;
+  letter-spacing: 2px !important;
+}
+
+header nav {
+  display: flex !important;
+  gap: 28px !important;
+}
+
+header nav a {
+  color: #fff !important;
+  text-decoration: none !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  opacity: .9;
+  transition: .2s ease;
+}
+
+header nav a:hover {
+  opacity: 1;
+}
+
+/* ---------- MAIN ---------- */
+
+main {
+  background: #050505 !important;
+  min-height: 100vh !important;
+  padding-top: 0 !important;
+}
+
+/* ---------- HERO ---------- */
+
+.hero {
+  min-height: 78vh !important;
+  padding: 150px 6% 90px !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  position: relative !important;
+  overflow: hidden !important;
+  background:
+    linear-gradient(
+      to top,
+      #050505 0%,
+      rgba(5,5,5,.65) 30%,
+      rgba(5,5,5,.15) 70%,
+      rgba(5,5,5,.2) 100%
+    ) !important;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 75% 35%,
+    rgba(229,9,20,.22),
+    transparent 35%
+  );
+  pointer-events: none;
+}
+
+.hero > * {
+  position: relative;
+  z-index: 2;
+}
+
+.hero h1 {
+  font-size: clamp(42px, 6vw, 82px) !important;
+  line-height: 1 !important;
+  max-width: 750px !important;
+  margin-bottom: 20px !important;
+  font-weight: 900 !important;
+}
+
+.hero p {
+  max-width: 620px !important;
+  color: #ddd !important;
+  font-size: 18px !important;
+  line-height: 1.6 !important;
+}
+
+/* ---------- BUTTONS ---------- */
+
+.primary {
+  border-radius: 5px !important;
+  padding: 12px 24px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: transform .2s ease, opacity .2s ease !important;
+}
+
+.primary:hover {
+  transform: scale(1.04);
+  opacity: .9;
+}
+
+/* ---------- MEMORY SECTIONS ---------- */
+
+section {
+  position: relative;
+}
+
+#memories {
+  padding: 20px 5% 70px !important;
+}
+
+#memories h2,
+#memories h3 {
+  color: #fff !important;
+  font-size: 24px !important;
+  margin-bottom: 18px !important;
+}
+
+/* ---------- MEDIA ROWS ---------- */
+
+#photos,
+#videos {
+  display: grid !important;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(190px, 1fr)
+  ) !important;
+  gap: 16px !important;
+  margin-bottom: 55px !important;
+}
+
+/* ---------- MEMORY CARD ---------- */
+
+.memory-card {
+  background: #181818 !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+  position: relative !important;
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease !important;
+  cursor: pointer !important;
+}
+
+.memory-card:hover {
+  transform: scale(1.05) !important;
+  z-index: 10 !important;
+  box-shadow: 0 18px 45px rgba(0,0,0,.65) !important;
+}
+
+.memory-card .media-wrapper {
+  width: 100% !important;
+  aspect-ratio: 16 / 10 !important;
+  overflow: hidden !important;
+  background: #111 !important;
+}
+
+.memory-card img,
+.memory-card video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.memory-card video {
+  background: #000 !important;
+}
+
+.memory-title {
+  padding: 11px 12px 13px !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* ---------- BIRTHDAY LETTER ---------- */
+
+#letter {
+  padding: 70px 7% !important;
+  background:
+    linear-gradient(
+      180deg,
+      #050505,
+      #0c0c0c
+    ) !important;
+}
+
+#letter h2 {
+  font-size: 34px !important;
+  margin-bottom: 20px !important;
+}
+
+#letter p {
+  max-width: 780px !important;
+  color: #ccc !important;
+  font-size: 17px !important;
+  line-height: 1.8 !important;
+}
+
+/* ---------- ADMIN ---------- */
+
+#admin {
+  margin: 50px 5% !important;
+  padding: 30px !important;
+  background: #151515 !important;
+  border-radius: 8px !important;
+  border: 1px solid #292929 !important;
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 700px) {
+
+  header {
+    padding: 0 20px !important;
+  }
+
+  header nav {
+    gap: 12px !important;
+  }
+
+  header nav a {
+    font-size: 12px !important;
+  }
+
+  .hero {
+    min-height: 65vh !important;
+    padding: 120px 22px 60px !important;
+  }
+
+  .hero h1 {
+    font-size: 42px !important;
+  }
+
+  .hero p {
+    font-size: 15px !important;
+  }
+
+  #photos,
+  #videos {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 9px !important;
+  }
+
+  .memory-card:hover {
+    transform: none !important;
+  }
+}
