@@ -260,7 +260,21 @@ async function renderMedia(containerId, items) {
         </div>
       `;
     }
+card.addEventListener("click", function (event) {
 
+  if (
+    item.type === "video" &&
+    event.target.closest("video")
+  ) {
+    return;
+  }
+
+  openMediaModal(
+    url,
+    item.type,
+    item.title || "A Special Memory"
+  );
+});
     container.appendChild(card);
   }
 }
@@ -268,7 +282,101 @@ async function renderMedia(containerId, items) {
 // ===============================
 // ADMIN
 // ===============================
+// ===============================
+// FULL SCREEN MEDIA VIEWER
+// ===============================
 
+function openMediaModal(url, type, title) {
+  const modal = document.getElementById("modal");
+  const media = document.getElementById("media");
+
+  if (!modal || !media) return;
+
+  media.innerHTML = "";
+
+  if (type === "video") {
+    const video = document.createElement("video");
+
+    video.src = url;
+    video.controls = true;
+    video.autoplay = true;
+    video.playsInline = true;
+
+    media.appendChild(video);
+
+    video.play().catch(() => {});
+  } else {
+    const img = document.createElement("img");
+
+    img.src = url;
+    img.alt = title || "Urja Memory";
+
+    media.appendChild(img);
+  }
+
+  const titleElement = document.createElement("div");
+  titleElement.className = "modal-title";
+  titleElement.textContent = title || "Urja Memory";
+
+  media.appendChild(titleElement);
+
+  modal.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal(event) {
+  const modal = document.getElementById("modal");
+
+  if (!modal) return;
+
+  if (
+    event.target === modal ||
+    event.target.classList.contains("close")
+  ) {
+    modal.classList.add("hidden");
+
+    const media = document.getElementById("media");
+
+    if (media) {
+      const video = media.querySelector("video");
+
+      if (video) {
+        video.pause();
+      }
+
+      media.innerHTML = "";
+    }
+
+    document.body.style.overflow = "";
+  }
+}
+
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Escape") {
+    const modal = document.getElementById("modal");
+
+    if (modal && !modal.classList.contains("hidden")) {
+      modal.classList.add("hidden");
+
+      const media = document.getElementById("media");
+
+      if (media) {
+        const video = media.querySelector("video");
+
+        if (video) {
+          video.pause();
+        }
+
+        media.innerHTML = "";
+      }
+
+      document.body.style.overflow = "";
+    }
+  }
+});
+
+window.openMediaModal = openMediaModal;
+window.closeModal = closeModal;
 async function renderAdmin() {
 
   const adminSection = document.getElementById("admin");
