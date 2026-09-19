@@ -1,18 +1,23 @@
+// ===============================
+// URJA BIRTHDAY WEBSITE
+// CLEAN APP.JS
+// ===============================
+
 const SUPABASE_URL = "https://euifwxbpmutuodqtgrus.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_3N78RDU-j93U3oO5FG3fQg_YRx5djWm"
+const SUPABASE_ANON_KEY = "sb_publishable_3N78RDU-j93U3oO5FG3fQg_YRx5djWm";
 const BUCKET = "urja-memories";
 const SIGNED_URL_SECONDS = 300;
 
-const client =
-  SUPABASE_URL.startsWith("http") &&
-  SUPABASE_ANON_KEY &&
-  SUPABASE_ANON_KEY !== "PASTE_YOUR_CURRENT_PUBLISHABLE_KEY"
-    ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-    : null;
+const client = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
 let memories = [];
 
-/* ---------- HELPERS ---------- */
+// ===============================
+// SECURITY
+// ===============================
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -22,6 +27,10 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
+
+// ===============================
+// SIGNED URL
+// ===============================
 
 async function signedUrl(path) {
   const { data, error } = await client.storage
@@ -36,34 +45,49 @@ async function signedUrl(path) {
   return data?.signedUrl || null;
 }
 
-/* ---------- INTRO ---------- */
+// ===============================
+// INTRO
+// ===============================
 
 function setupIntro() {
   const enterBtn = document.getElementById("enterBtn");
   const intro = document.getElementById("intro");
 
-  if (!enterBtn || !intro) return;
+  if (!enterBtn || !intro) {
+    console.error("Intro elements not found.");
+    return;
+  }
 
   enterBtn.classList.remove("hidden");
   enterBtn.style.display = "inline-block";
 
-  enterBtn.onclick = () => {
+  enterBtn.onclick = async function () {
+
+    // Play intro video with sound after user interaction
     const introVideo = document.getElementById("introVideo");
 
     if (introVideo) {
       introVideo.muted = false;
       introVideo.volume = 1;
-      introVideo.play().catch(() => {});
+
+      try {
+        await introVideo.play();
+      } catch (error) {
+        console.log("Video play:", error);
+      }
     }
 
+    // Hide intro
     intro.classList.add("intro-hidden");
 
+    // Show main website
     const header = document.querySelector("header");
     const main = document.querySelector("main");
 
     if (header) {
       header.style.setProperty("display", "flex", "important");
       header.style.setProperty("visibility", "visible", "important");
+      header.style.setProperty("opacity", "1", "important");
     }
 
     if (main) {
@@ -78,13 +102,12 @@ function setupIntro() {
     });
   };
 }
-  /* ---------- MEDIA ---------- */
+
+// ===============================
+// LOAD MEMORIES
+// ===============================
 
 async function loadMemories() {
-  if (!client) {
-    console.error("Supabase client is not configured.");
-    return;
-  }
 
   const { data, error } = await client
     .from("memories")
@@ -92,39 +115,49 @@ async function loadMemories() {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error("Memory load error:", error);
+    console.error("Memories error:", error);
     return;
   }
 
   memories = data || [];
 
-  const photos = memories.filter(item => item.type === "photo");
-  const videos = memories.filter(item => item.type === "video");
+  const photos = memories.filter(
+    item => item.type === "photo"
+  );
+
+  const videos = memories.filter(
+    item => item.type === "video"
+  );
 
   await renderMedia("photos", photos);
   await renderMedia("videos", videos);
 
   await renderAdmin();
   await loadIntroVideo();
-} 
+}
+
+// ===============================
+// INTRO VIDEO
+// ===============================
+
 async function loadIntroVideo() {
+
   const introVideo = document.getElementById("introVideo");
 
-  if (!introVideo || !memories.length) return;
+  if (!introVideo) return;
 
-  const introMemory = memories.find(item => item.type === "video");
+  const firstVideo = memories.find(
+    item => item.type === "video"
+  );
 
-  if (!introMemory) {
+  if (!firstVideo) {
     console.log("No intro video found.");
     return;
   }
 
-  const url = await signedUrl(introMemory.path);
+  const url = await signedUrl(firstVideo.path);
 
-  if (!url) {
-    console.error("Could not create intro video URL.");
-    return;
-  }
+  if (!url) return;
 
   introVideo.src = url;
   introVideo.load();
@@ -132,24 +165,33 @@ async function loadIntroVideo() {
   try {
     await introVideo.play();
   } catch (error) {
-    console.log("Autoplay waiting for user interaction:", error);
+    console.log("Autoplay waiting for interaction.");
   }
 }
 
+// ===============================
+// MEDIA RENDER
+// ===============================
+
 async function renderMedia(containerId, items) {
+
   const container = document.getElementById(containerId);
 
-  if (!container) return;
+  if (!container) {
+    console.log("Container not found:", containerId);
+    return;
+  }
 
   container.innerHTML = "";
 
   if (!items.length) {
     container.innerHTML =
-      '<p class="muted">Memories will appear here ❤️</p>';
+      '<p class="empty-state">Coming soon ❤️</p>';
     return;
   }
 
   for (const item of items) {
+
     const url = await signedUrl(item.path);
 
     if (!url) continue;
@@ -157,29 +199,36 @@ async function renderMedia(containerId, items) {
     const card = document.createElement("article");
     card.className = "memory-card";
 
-    const title = escapeHtml(item.title || "Urja Memory");
-
     if (item.type === "video") {
+
       card.innerHTML = `
-        <video
-          class="memory-media"
-          controls
-          playsinline
-          preload="metadata"
-        >
-          <source src="${url}" type="video/mp4">
-        </video>
-        <div class="memory-title">${title}</div>
+        <div class="media-wrapper">
+          <video
+            src="${escapeHtml(url)}"
+            controls
+            playsinline
+            preload="metadata">
+          </video>
+        </div>
+
+        <div class="memory-title">
+          ${escapeHtml(item.title || "A Special Memory")}
+        </div>
       `;
+
     } else {
+
       card.innerHTML = `
-        <img
-          class="memory-media"
-          src="${url}"
-          alt="${title}"
-          loading="lazy"
-        >
-        <div class="memory-title">${title}</div>
+        <div class="media-wrapper">
+          <img
+            src="${escapeHtml(url)}"
+            alt="${escapeHtml(item.title || "Urja Memory")}"
+            loading="lazy">
+        </div>
+
+        <div class="memory-title">
+          ${escapeHtml(item.title || "A Special Memory")}
+        </div>
       `;
     }
 
@@ -187,68 +236,55 @@ async function renderMedia(containerId, items) {
   }
 }
 
-/* ---------- VIEWER LOGIN ---------- */
+// ===============================
+// ADMIN
+// ===============================
 
-function showViewerLogin() {
-  if (document.getElementById("viewerLogin")) return;
+async function renderAdmin() {
 
-  const overlay = document.createElement("div");
+  const adminSection = document.getElementById("admin");
 
-  overlay.id = "viewerLogin";
-  overlay.innerHTML = `
-    <div class="login-box">
-      <h2>Urja's Private Story ❤️</h2>
-      <p>Enter the birthday access details to view her memories.</p>
+  if (!adminSection) return;
 
-      <input
-        id="viewerEmail"
-        type="email"
-        placeholder="Email"
-        autocomplete="email"
-      >
+  const {
+    data: {
+      user
+    }
+  } = await client.auth.getUser();
 
-      <input
-        id="viewerPassword"
-        type="password"
-        placeholder="Password"
-        autocomplete="current-password"
-      >
+  if (!user) {
+    adminSection.style.display = "none";
+    return;
+  }
 
-      <button id="viewerLoginBtn" class="primary">
-        ENTER HER STORY
-      </button>
-
-      <p id="viewerLoginMsg"></p>
-    </div>
-  `;
-
-  document.body.appendChild(overlay);
-
-  document.getElementById("viewerLoginBtn").onclick =
-    loginViewer;
+  adminSection.style.display = "block";
 }
 
-async function loginViewer() {
-  const email =
-    document.getElementById("viewerEmail")?.value.trim();
+// ===============================
+// LOGIN
+// ===============================
 
-  const password =
-    document.getElementById("viewerPassword")?.value;
+async function loginUser() {
 
-  const msg =
-    document.getElementById("viewerLoginMsg");
+  const emailInput =
+    document.getElementById("email") ||
+    document.getElementById("loginEmail");
 
-  if (!email || !password) {
-    if (msg) msg.textContent = "Please enter email and password.";
+  const passwordInput =
+    document.getElementById("password") ||
+    document.getElementById("loginPassword");
+
+  const message =
+    document.getElementById("loginMsg") ||
+    document.getElementById("loginMessage");
+
+  if (!emailInput || !passwordInput) {
+    console.error("Login fields not found.");
     return;
   }
 
-  if (!client) {
-    if (msg) msg.textContent = "Website configuration error.";
-    return;
-  }
-
-  if (msg) msg.textContent = "Signing in...";
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
 
   const { error } = await client.auth.signInWithPassword({
     email,
@@ -256,176 +292,89 @@ async function loginViewer() {
   });
 
   if (error) {
-    if (msg) msg.textContent = error.message;
+
+    if (message) {
+      message.textContent = error.message;
+    }
+
+    console.error("Login error:", error);
     return;
   }
 
-  document.getElementById("viewerLogin")?.remove();
+  if (message) {
+    message.textContent = "Login successful ❤️";
+  }
 
   await loadMemories();
 }
 
-/* ---------- ADMIN ---------- */
+// Make available to HTML buttons
+window.loginUser = loginUser;
 
-async function isAdmin() {
-  if (!client) return false;
+// ===============================
+// LOGOUT
+// ===============================
 
-  const { data, error } =
-    await client.rpc("is_admin");
+async function logoutUser() {
 
-  if (error) {
-    console.error("Admin check error:", error);
-    return false;
-  }
+  await client.auth.signOut();
 
-  return data === true;
+  location.reload();
 }
 
-async function renderAdmin() {
-  const adminSection =
-    document.getElementById("admin");
+window.logoutUser = logoutUser;
 
-  if (!adminSection || !client) return;
-
-  const admin = await isAdmin();
-
-  if (!admin) {
-    adminSection.style.display = "none";
-    return;
-  }
-
-  adminSection.style.display = "block";
-
-  adminSection.innerHTML = `
-    <div class="admin-panel">
-      <h2>Private Admin</h2>
-
-      <p>
-        Memories are stored in a private vault.
-      </p>
-
-      <input
-        id="files"
-        type="file"
-        accept="image/*,video/*"
-        multiple
-      >
-
-      <button
-        id="uploadBtn"
-        class="primary"
-      >
-        Upload selected files
-      </button>
-
-      <button
-        id="logoutBtn"
-        class="secondary"
-      >
-        Logout
-      </button>
-
-      <p id="uploadMsg"></p>
-
-      <div id="adminList"></div>
-    </div>
-  `;
-
-  document.getElementById("uploadBtn").onclick =
-    uploadFiles;
-
-  document.getElementById("logoutBtn").onclick =
-    logoutAdmin;
-
-  renderAdminList();
-}
-
-async function renderAdminList() {
-  const list =
-    document.getElementById("adminList");
-
-  if (!list) return;
-
-  list.innerHTML = "";
-
-  for (const item of memories) {
-    const row = document.createElement("div");
-
-    row.className = "admin-memory";
-
-    row.innerHTML = `
-      <span>${escapeHtml(item.title || item.path)}</span>
-      <button
-        class="delete-memory"
-        data-path="${escapeHtml(item.path)}"
-        data-id="${item.id}"
-      >
-        Delete
-      </button>
-    `;
-
-    list.appendChild(row);
-  }
-
-  document
-    .querySelectorAll(".delete-memory")
-    .forEach(button => {
-      button.addEventListener("click", () => {
-        deleteMemory(
-          button.dataset.id,
-          button.dataset.path
-        );
-      });
-    });
-}
-
-/* ---------- UPLOAD ---------- */
+// ===============================
+// UPLOAD
+// ===============================
 
 async function uploadFiles() {
-  const input =
-    document.getElementById("files");
 
-  const msg =
-    document.getElementById("uploadMsg");
+  const input = document.getElementById("files");
+
+  const message =
+    document.getElementById("uploadMsg") ||
+    document.getElementById("uploadMessage");
 
   if (!input || !input.files.length) {
-    if (msg) msg.textContent =
-      "Please select a file first.";
+
+    if (message) {
+      message.textContent =
+        "Please select a file first.";
+    }
+
     return;
   }
 
-  if (!client) {
-    if (msg) msg.textContent =
-      "Website configuration error.";
-    return;
+  if (message) {
+    message.textContent =
+      "Uploading securely...";
   }
 
-  if (!(await isAdmin())) {
-    if (msg) msg.textContent =
-      "Admin access required.";
-    return;
-  }
+  for (const file of input.files) {
 
-  const files = [...input.files];
-
-  if (msg) msg.textContent =
-    "Uploading securely...";
-
-  for (const file of files) {
     const isMedia =
       file.type.startsWith("image/") ||
       file.type.startsWith("video/");
 
     if (!isMedia) {
-      if (msg) msg.textContent =
-        `Skipped ${file.name}: unsupported file type`;
-      return;
+
+      if (message) {
+        message.textContent =
+          `Skipped ${file.name}: unsupported file type`;
+      }
+
+      continue;
     }
 
     if (file.size > 50 * 1024 * 1024) {
-      if (msg) msg.textContent =
-        `Skipped ${file.name}: file is over 50 MB`;
-      return;
+
+      if (message) {
+        message.textContent =
+          `Skipped ${file.name}: file is over 50 MB`;
+      }
+
+      continue;
     }
 
     const safeName = file.name
@@ -440,134 +389,88 @@ async function uploadFiles() {
         ? "video"
         : "photo";
 
-    const upload =
-      await client.storage
-        .from(BUCKET)
-        .upload(path, file, {
-          upsert: false,
-          contentType: file.type
-        });
+    const upload = await client.storage
+      .from(BUCKET)
+      .upload(path, file, {
+        upsert: false,
+        contentType: file.type
+      });
 
     if (upload.error) {
-      console.error(upload.error);
 
-      if (msg) msg.textContent =
-        `Upload failed: ${upload.error.message}`;
+      console.error(
+        "Storage upload error:",
+        upload.error
+      );
+
+      if (message) {
+        message.textContent =
+          `Upload failed: ${upload.error.message}`;
+      }
 
       return;
     }
 
-    const insert =
-      await client
-        .from("memories")
-        .insert({
-          path,
-          type,
-          title: file.name
-        });
+    const insert = await client
+      .from("memories")
+      .insert({
+        path,
+        type,
+        title: file.name
+      });
 
     if (insert.error) {
+
       await client.storage
         .from(BUCKET)
         .remove([path]);
 
-      console.error(insert.error);
+      console.error(
+        "Database error:",
+        insert.error
+      );
 
-      if (msg) msg.textContent =
-        `Database error: ${insert.error.message}`;
+      if (message) {
+        message.textContent =
+          `Database error: ${insert.error.message}`;
+      }
 
       return;
     }
   }
 
-  if (msg) msg.textContent =
-    "Upload complete ❤️";
+  if (message) {
+    message.textContent =
+      "Upload complete ❤️";
+  }
 
   input.value = "";
 
   await loadMemories();
 }
 
-/* ---------- DELETE ---------- */
+window.uploadFiles = uploadFiles;
 
-async function deleteMemory(id, path) {
-  if (!client) return;
+// ===============================
+// AUTH STATE
+// ===============================
 
-  if (!(await isAdmin())) {
-    alert("Admin access required.");
-    return;
+client.auth.onAuthStateChange(
+  async function () {
+    await renderAdmin();
   }
+);
 
-  const confirmed =
-    confirm("Delete this memory?");
+// ===============================
+// START APP
+// ===============================
 
-  if (!confirmed) return;
+window.addEventListener("load", async function () {
 
-  const storageDelete =
-    await client.storage
-      .from(BUCKET)
-      .remove([path]);
+  console.log("URJA website loaded.");
 
-  if (storageDelete.error) {
-    alert(storageDelete.error.message);
-    return;
-  }
-
-  const dbDelete =
-    await client
-      .from("memories")
-      .delete()
-      .eq("id", id);
-
-  if (dbDelete.error) {
-    alert(dbDelete.error.message);
-    return;
-  }
-
-  await loadMemories();
-}
-
-/* ---------- LOGOUT ---------- */
-
-async function logoutAdmin() {
-  if (!client) return;
-
-  await client.auth.signOut();
-
-  location.reload();
-}
-
-/* ---------- START WEBSITE ---------- */
-
-window.addEventListener("load", async () => {
   setupIntro();
 
-  if (!client) {
-    console.error(
-      "Supabase is not configured."
-    );
-    return;
-  }
+  await loadMemories();
 
-  const {
-    data: { session }
-  } = await client.auth.getSession();
-
-  if (session) {
-    await loadMemories();
-  } else {
-    showViewerLogin();
-  }
-
-  client.auth.onAuthStateChange(
-    async (_event, newSession) => {
-      if (newSession) {
-        document
-          .getElementById("viewerLogin")
-          ?.remove();
-
-        await loadMemories();
-      }
-    }
-  );
 });
