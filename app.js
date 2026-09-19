@@ -95,6 +95,35 @@ async function loadMemories() {
   await renderMedia("videos", videos);
 
   await renderAdmin();
+  await loadIntroVideo();
+} 
+async function loadIntroVideo() {
+  const introVideo = document.getElementById("introVideo");
+
+  if (!introVideo || !memories.length) return;
+
+  const introMemory = memories.find(item => item.type === "video");
+
+  if (!introMemory) {
+    console.log("No intro video found.");
+    return;
+  }
+
+  const url = await signedUrl(introMemory.path);
+
+  if (!url) {
+    console.error("Could not create intro video URL.");
+    return;
+  }
+
+  introVideo.src = url;
+  introVideo.load();
+
+  try {
+    await introVideo.play();
+  } catch (error) {
+    console.log("Autoplay waiting for user interaction:", error);
+  }
 }
 
 async function renderMedia(containerId, items) {
