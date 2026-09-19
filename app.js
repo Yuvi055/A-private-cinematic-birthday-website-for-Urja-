@@ -1,5 +1,5 @@
-const SUPABASE_URL = "const SUPABASE_URL = "https://euifwxbpmutuodqtgrus.supabase.cL";
-const SUPABASE_ANON_KEY = "const SUPABASE_ANON_KEY = "sb_publishable_3N78RDU-j93U3oO5FG3fQg_YRx5djWm";const BUCKET = "urja-memories";
+const SUPABASE_URL = "https://euifwxbpmutuodqtgrus.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_3N78RDU-j93U3oO5FG3fQg_YRx5djWm"
 const BUCKET = "urja-memories";
 const SIGNED_URL_SECONDS = 300;
 
