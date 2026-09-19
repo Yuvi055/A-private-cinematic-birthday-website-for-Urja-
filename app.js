@@ -73,64 +73,70 @@ if (header) {
 if (main) {
   main.style.setProperty("display", "none", "important");
 }
-  enterBtn.onclick = async function () {
-    const introVideo = document.getElementById("introVideo");
+enterBtn.onclick = function () {
 
-    if (introVideo) {
-      introVideo.muted = false;
-      introVideo.volume = 1;
+  // Hide intro immediately
+  intro.style.setProperty("display", "none", "important");
+  intro.style.setProperty("visibility", "hidden", "important");
+  intro.style.setProperty("pointer-events", "none", "important");
 
-      try {
-        await introVideo.play();
-      } catch (error) {
-        console.log("Video play:", error);
-      }
-    }
-      // START BACKGROUND SONG
-  const backgroundMusic = document.getElementById("backgroundMusic");
+  // Show website
+  const header = document.querySelector("header");
+  const main = document.querySelector("main");
+
+  if (header) {
+    header.style.setProperty("display", "flex", "important");
+    header.style.setProperty("visibility", "visible", "important");
+    header.style.setProperty("opacity", "1", "important");
+  }
+
+  if (main) {
+    main.style.setProperty("display", "block", "important");
+    main.style.setProperty("visibility", "visible", "important");
+    main.style.setProperty("opacity", "1", "important");
+  }
+
+  // Start intro video without waiting
+  const introVideo = document.getElementById("introVideo");
+
+  if (introVideo) {
+    introVideo.muted = false;
+    introVideo.volume = 1;
+
+    introVideo.play().catch((error) => {
+      console.log("Intro video play:", error);
+    });
+  }
+
+  // Start background music without waiting
+  const backgroundMusic =
+    document.getElementById("backgroundMusic");
 
   if (backgroundMusic) {
-    const musicUrl = await signedUrl(BACKGROUND_SONG_PATH);
 
-    if (musicUrl) {
+    signedUrl(BACKGROUND_SONG_PATH).then((musicUrl) => {
+
+      if (!musicUrl) return;
+
       backgroundMusic.src = musicUrl;
       backgroundMusic.currentTime = 0;
       backgroundMusic.muted = false;
       backgroundMusic.volume = 0.45;
 
-      try {
-        await backgroundMusic.play();
-      } catch (error) {
-        console.log("Background music waiting:", error);
-      }
-    }
+      backgroundMusic.play().catch((error) => {
+        console.log("Background music:", error);
+      });
+
+    }).catch((error) => {
+      console.log("Background music error:", error);
+    });
   }
 
-    intro.style.setProperty("display", "none", "important");
-    intro.style.setProperty("visibility", "hidden", "important");
-    intro.style.setProperty("pointer-events", "none", "important");
-
-    const header = document.querySelector("header");
-    const main = document.querySelector("main");
-
-    if (header) {
-      header.style.setProperty("display", "flex", "important");
-      header.style.setProperty("visibility", "visible", "important");
-      header.style.setProperty("opacity", "1", "important");
-    }
-
-    if (main) {
-      main.style.setProperty("display", "block", "important");
-      main.style.setProperty("visibility", "visible", "important");
-      main.style.setProperty("opacity", "1", "important");
-    }
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  };
-}
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+};
 // ===============================
 // LOAD MEMORIES
 // ===============================
