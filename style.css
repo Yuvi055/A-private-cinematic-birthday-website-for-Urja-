@@ -1396,3 +1396,49 @@ body::-webkit-scrollbar {
   width: 0 !important;
   display: none !important;
 }
+/* =========================================
+   FINAL MOBILE MEMORY FRAME FIX
+   One card per row on phones
+   ========================================= */
+
+@media (max-width: 700px) {
+
+  #photos.row,
+  #videos.row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 22px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    overflow: visible !important;
+  }
+
+  #photos .memory-card,
+  #videos .memory-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  #photos .memory-card:hover,
+  #videos .memory-card:hover {
+    transform: translateY(-4px) !important;
+  }
+
+  #photos .media-wrapper,
+  #videos .media-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  #photos img,
+  #videos video {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+  }
+}
