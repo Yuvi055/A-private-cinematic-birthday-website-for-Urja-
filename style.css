@@ -1534,3 +1534,70 @@ body::-webkit-scrollbar {
     transform: translateY(-5px) !important;
   }
 }
+/* =========================================
+   BIRTHDAY PARTY POPPER
+   ========================================= */
+
+#birthdayPopper {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#birthdayPopper span {
+  position: absolute;
+
+  left: 50%;
+  top: 32%;
+
+  font-size: 24px;
+
+  opacity: 0;
+
+  transform:
+    translate(-50%, -50%)
+    scale(.4);
+
+  animation:
+    birthdayBurst
+    1.9s cubic-bezier(.15,.75,.25,1)
+    forwards;
+
+  animation-delay:
+    var(--delay);
+}
+
+#birthdayPopper.birthday-pop span {
+  animation-play-state: running;
+}
+
+@keyframes birthdayBurst {
+
+  0% {
+    opacity: 0;
+    transform:
+      translate(-50%, -50%)
+      scale(.35)
+      rotate(0deg);
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      translate(
+        var(--x),
+        var(--y)
+      )
+      scale(1.15)
+      rotate(
+        var(--rotate)
+      );
+  }
+}
