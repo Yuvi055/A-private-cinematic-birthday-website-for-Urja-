@@ -1360,3 +1360,32 @@ body {
   max-height: 90dvh !important;
   overflow-y: auto !important;
 }
+/* FINAL INTRO SCROLLBAR FIX */
+
+html,
+body {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+#intro {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+#intro::-webkit-scrollbar {
+  display: none !important;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none !important;
+}
