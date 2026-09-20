@@ -12,6 +12,11 @@ const SUPABASE_ANON_KEY =
 const BUCKET = "urja-memories";
 const SIGNED_URL_SECONDS = 300;
 
+// Your uploaded song-video file.
+// Its audio track will be used as background music.
+const BACKGROUND_MUSIC_PATH =
+  "WhatsApp Video 2026-09-19 at 9.40.31 PM.mp4";
+
 const client = supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
@@ -20,30 +25,218 @@ const client = supabase.createClient(
 let memories = [];
 
 // ===============================
-// VIEWER SESSION
+// AUDIO SYSTEM
 // ===============================
 
-async function ensureViewerSession() {
-  const {
-    data: { session }
-  } = await client.auth.getSession();
+let backgroundMusic = null;
+let backgroundMusicReady = false;
+let musicStarted = false;
 
-  if (session?.user) {
-    return true;
-  }
+async function prepareBackgroundMusic() {
+  try {
+    const url = await signedUrl(
+      BACKGROUND_MUSIC_PATH
+    );
 
-  const { data, error } =
-    await client.auth.signInAnonymously();
+    if (!url) return;
 
-  if (error) {
+    backgroundMusic = new Audio(url);
+
+    backgroundMusic.loop = true;
+    backgroundMusic.preload = "auto";
+    backgroundMusic.volume = 0;
+
+    backgroundMusicReady = true;
+
+    console.log("Background music ready.");
+  } catch (error) {
     console.error(
-      "Anonymous viewer login error:",
+      "Background music setup error:",
       error
     );
-    return false;
+  }
+}
+
+function playIntroSound() {
+  try {
+    const AudioContext =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if (!AudioContext) return;
+
+    const ctx = new AudioContext();
+
+    const oscillator =
+      ctx.createOscillator();
+
+    const gain =
+      ctx.createGain();
+
+    oscillator.type = "sine";
+
+    oscillator.frequency.setValueAtTime(
+      140,
+      ctx.currentTime
+    );
+
+    oscillator.frequency.exponentialRampToValueAtTime(
+      620,
+      ctx.currentTime + 0.7
+    );
+
+    gain.gain.setValueAtTime(
+      0.0001,
+      ctx.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.16,
+      ctx.currentTime + 0.08
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      ctx.currentTime + 0.95
+    );
+
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+
+    oscillator.start();
+    oscillator.stop(
+      ctx.currentTime + 1
+    );
+  } catch (error) {
+    console.log(
+      "Intro sound unavailable:",
+      error
+    );
+  }
+}
+
+function startBackgroundMusic() {
+  if (
+    !backgroundMusicReady ||
+    !backgroundMusic
+  ) {
+    console.log(
+      "Background music is not ready yet."
+    );
+    return;
   }
 
-  return !!data?.session;
+  musicStarted = true;
+
+  // Start inside the user's click gesture.
+  backgroundMusic.volume = 0;
+
+  backgroundMusic
+    .play()
+    .then(() => {
+      // Fade in smoothly
+      let volume = 0;
+
+      const fadeTimer =
+        setInterval(() => {
+          volume += 0.05;
+
+          if (volume >= 0.35) {
+            volume = 0.35;
+            clearInterval(
+              fadeTimer
+            );
+          }
+
+          if (backgroundMusic) {
+            backgroundMusic.volume =
+              volume;
+          }
+        }, 80);
+    })
+    .catch((error) => {
+      console.log(
+        "Background music waiting:",
+        error
+      );
+    });
+}
+
+function pauseBackgroundMusic() {
+  if (backgroundMusic) {
+    backgroundMusic.pause();
+  }
+}
+
+function resumeBackgroundMusic() {
+  if (
+    backgroundMusic &&
+    musicStarted &&
+    backgroundMusic.paused
+  ) {
+    backgroundMusic
+      .play()
+      .catch(() => {});
+  }
+}
+
+function anyMemoryVideoPlaying(
+  currentVideo = null
+) {
+  const videos = [
+    ...document.querySelectorAll(
+      "#videos video"
+    ),
+    ...document.querySelectorAll(
+      "#media video"
+    )
+  ];
+
+  return videos.some(
+    (video) =>
+      video !== currentVideo &&
+      !video.paused &&
+      !video.ended
+  );
+}
+
+function connectVideoToMusic(
+  video
+) {
+  if (!video) return;
+
+  video.addEventListener(
+    "play",
+    function () {
+      pauseBackgroundMusic();
+    }
+  );
+
+  video.addEventListener(
+    "pause",
+    function () {
+      if (
+        !anyMemoryVideoPlaying(
+          video
+        )
+      ) {
+        resumeBackgroundMusic();
+      }
+    }
+  );
+
+  video.addEventListener(
+    "ended",
+    function () {
+      if (
+        !anyMemoryVideoPlaying(
+          video
+        )
+      ) {
+        resumeBackgroundMusic();
+      }
+    }
+  );
 }
 
 // ===============================
@@ -53,10 +246,22 @@ async function ensureViewerSession() {
 function escapeHtml(value) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
 }
 
 // ===============================
@@ -64,7 +269,10 @@ function escapeHtml(value) {
 // ===============================
 
 async function signedUrl(path) {
-  const { data, error } = await client.storage
+  const {
+    data,
+    error
+  } = await client.storage
     .from(BUCKET)
     .createSignedUrl(
       path,
@@ -83,15 +291,51 @@ async function signedUrl(path) {
 }
 
 // ===============================
+// VIEWER SESSION
+// ===============================
+
+async function ensureViewerSession() {
+  const {
+    data: {
+      session
+    }
+  } = await client.auth.getSession();
+
+  if (session?.user) {
+    return true;
+  }
+
+  const {
+    data,
+    error
+  } =
+    await client.auth.signInAnonymously();
+
+  if (error) {
+    console.error(
+      "Anonymous viewer login error:",
+      error
+    );
+    return false;
+  }
+
+  return !!data?.session;
+}
+
+// ===============================
 // INTRO
 // ===============================
 
 function setupIntro() {
   const enterBtn =
-    document.getElementById("enterBtn");
+    document.getElementById(
+      "enterBtn"
+    );
 
   const intro =
-    document.getElementById("intro");
+    document.getElementById(
+      "intro"
+    );
 
   if (!enterBtn || !intro) {
     console.error(
@@ -101,12 +345,20 @@ function setupIntro() {
   }
 
   const header =
-    document.querySelector("header");
+    document.querySelector(
+      "header"
+    );
 
   const main =
-    document.querySelector("main");
+    document.querySelector(
+      "main"
+    );
 
-  // Hide website behind intro
+  // Lock page while intro is visible
+  document.body.classList.add(
+    "intro-active"
+  );
+
   if (header) {
     header.style.setProperty(
       "display",
@@ -123,78 +375,113 @@ function setupIntro() {
     );
   }
 
-document.body.classList.add("intro-active");
-  enterBtn.classList.remove("hidden");
-  enterBtn.style.display = "inline-block";
+  enterBtn.classList.remove(
+    "hidden"
+  );
 
-  enterBtn.onclick = function () {
+  enterBtn.style.display =
+    "inline-block";
 
-    // Hide intro immediately
-    intro.style.setProperty(
-      "display",
-      "none",
-      "important"
-    );
+  enterBtn.onclick =
+    function () {
 
-    intro.style.setProperty(
-      "visibility",
-      "hidden",
-      "important"
-    );
+      // Unlock sound with user gesture
+      playIntroSound();
 
-    intro.style.setProperty(
-      "pointer-events",
-      "none",
-      "important"
-    );
-
-    // Show website immediately
-    if (header) {
-      header.style.setProperty(
+      // Hide intro immediately
+      intro.style.setProperty(
         "display",
-        "flex",
+        "none",
         "important"
       );
 
-      header.style.setProperty(
+      intro.style.setProperty(
         "visibility",
-        "visible",
+        "hidden",
         "important"
       );
 
-      header.style.setProperty(
-        "opacity",
-        "1",
-        "important"
-      );
-    }
-
-    if (main) {
-      main.style.setProperty(
-        "display",
-        "block",
+      intro.style.setProperty(
+        "pointer-events",
+        "none",
         "important"
       );
 
-      main.style.setProperty(
-        "visibility",
-        "visible",
-        "important"
+      // Show website
+      if (header) {
+        header.style.setProperty(
+          "display",
+          "flex",
+          "important"
+        );
+
+        header.style.setProperty(
+          "visibility",
+          "visible",
+          "important"
+        );
+
+        header.style.setProperty(
+          "opacity",
+          "1",
+          "important"
+        );
+      }
+
+      if (main) {
+        main.style.setProperty(
+          "display",
+          "block",
+          "important"
+        );
+
+        main.style.setProperty(
+          "visibility",
+          "visible",
+          "important"
+        );
+
+        main.style.setProperty(
+          "opacity",
+          "1",
+          "important"
+        );
+      }
+
+      // Restore page scrolling
+      document.body.classList.remove(
+        "intro-active"
       );
 
-      main.style.setProperty(
-        "opacity",
-        "1",
-        "important"
-      );
-    }
+      // Start intro video if available
+      const introVideo =
+        document.getElementById(
+          "introVideo"
+        );
 
-document.body.classList.remove("intro-active");
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  };
+      if (introVideo) {
+        introVideo.muted = false;
+        introVideo.volume = 1;
+
+        introVideo
+          .play()
+          .catch((error) => {
+            console.log(
+              "Intro video play:",
+              error
+            );
+          });
+      }
+
+      // Start background music
+      // from the same user gesture
+      startBackgroundMusic();
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    };
 }
 
 // ===============================
@@ -208,9 +495,12 @@ async function loadMemories() {
   } = await client
     .from("memories")
     .select("*")
-    .order("created_at", {
-      ascending: false
-    });
+    .order(
+      "created_at",
+      {
+        ascending: false
+      }
+    );
 
   if (error) {
     console.error(
@@ -222,15 +512,13 @@ async function loadMemories() {
 
   memories = data || [];
 
-  // Load intro video early
   await loadIntroVideo();
 
-  // ===============================
-  // HERO PHOTO
-  // ===============================
-
+  // Hero photo
   const hero =
-    document.querySelector(".hero");
+    document.querySelector(
+      ".hero"
+    );
 
   if (hero) {
     const heroPhoto =
@@ -291,8 +579,14 @@ async function loadMemories() {
     );
 
   await Promise.all([
-    renderMedia("photos", photos),
-    renderMedia("videos", videos)
+    renderMedia(
+      "photos",
+      photos
+    ),
+    renderMedia(
+      "videos",
+      videos
+    )
   ]);
 
   await renderAdmin();
@@ -308,7 +602,9 @@ async function loadIntroVideo() {
       "introVideo"
     );
 
-  if (!introVideo) return;
+  if (!introVideo) {
+    return;
+  }
 
   const firstVideo =
     memories.find(
@@ -317,9 +613,6 @@ async function loadIntroVideo() {
     );
 
   if (!firstVideo) {
-    console.log(
-      "No intro video found."
-    );
     return;
   }
 
@@ -328,21 +621,22 @@ async function loadIntroVideo() {
       firstVideo.path
     );
 
-  if (!url) return;
+  if (!url) {
+    return;
+  }
 
   introVideo.src = url;
   introVideo.muted = true;
   introVideo.playsInline = true;
-
   introVideo.load();
 
-  introVideo.play().catch(
-    () => {
+  introVideo
+    .play()
+    .catch(() => {
       console.log(
         "Intro autoplay waiting."
       );
-    }
-  );
+    });
 }
 
 // ===============================
@@ -359,10 +653,6 @@ async function renderMedia(
     );
 
   if (!container) {
-    console.log(
-      "Container not found:",
-      containerId
-    );
     return;
   }
 
@@ -371,108 +661,126 @@ async function renderMedia(
   if (!items.length) {
     container.innerHTML =
       '<p class="empty-state">Coming soon ❤️</p>';
-
     return;
   }
 
-  const cards = await Promise.all(
-    items.map(
-      async (item) => {
-        const url =
-          await signedUrl(
-            item.path
-          );
-
-        if (!url) return null;
-
-        const card =
-          document.createElement(
-            "article"
-          );
-
-        card.className =
-          "memory-card";
-
-        if (
-          item.type === "video"
-        ) {
-          card.innerHTML = `
-            <div class="media-wrapper">
-              <video
-                src="${escapeHtml(url)}"
-                controls
-                playsinline
-                preload="metadata">
-              </video>
-            </div>
-
-            <div class="memory-title">
-              ${escapeHtml(
-                item.title ||
-                "A Special Memory"
-              )}
-            </div>
-          `;
-        } else {
-          card.innerHTML = `
-            <div class="media-wrapper">
-              <img
-                src="${escapeHtml(url)}"
-                alt="${escapeHtml(
-                  item.title ||
-                  "Urja Memory"
-                )}"
-                loading="lazy">
-            </div>
-
-            <div class="memory-title">
-              ${escapeHtml(
-                item.title ||
-                "A Special Memory"
-              )}
-            </div>
-          `;
-        }
-
-        // Full-screen viewer
-        card.addEventListener(
-          "click",
-          function (event) {
-
-            if (
-              item.type === "video" &&
-              event.target.closest(
-                "video"
-              )
-            ) {
-              return;
-            }
-
-            openMediaModal(
-              url,
-              item.type,
-              item.title ||
-              "A Special Memory"
+  const cards =
+    await Promise.all(
+      items.map(
+        async (item) => {
+          const url =
+            await signedUrl(
+              item.path
             );
-          }
-        );
 
-        return card;
-      }
-    )
-  );
+          if (!url) {
+            return null;
+          }
+
+          const card =
+            document.createElement(
+              "article"
+            );
+
+          card.className =
+            "memory-card";
+
+          if (
+            item.type === "video"
+          ) {
+            card.innerHTML = `
+              <div class="media-wrapper">
+                <video
+                  src="${escapeHtml(
+                    url
+                  )}"
+                  controls
+                  playsinline
+                  preload="metadata">
+                </video>
+              </div>
+
+              <div class="memory-title">
+                ${escapeHtml(
+                  item.title ||
+                  "A Special Memory"
+                )}
+              </div>
+            `;
+
+            const video =
+              card.querySelector(
+                "video"
+              );
+
+            connectVideoToMusic(
+              video
+            );
+          } else {
+            card.innerHTML = `
+              <div class="media-wrapper">
+                <img
+                  src="${escapeHtml(
+                    url
+                  )}"
+                  alt="${escapeHtml(
+                    item.title ||
+                    "Urja Memory"
+                  )}"
+                  loading="lazy">
+              </div>
+
+              <div class="memory-title">
+                ${escapeHtml(
+                  item.title ||
+                  "A Special Memory"
+                )}
+              </div>
+            `;
+          }
+
+          // Open full-screen viewer
+          card.addEventListener(
+            "click",
+            function (event) {
+
+              if (
+                item.type ===
+                  "video" &&
+                event.target.closest(
+                  "video"
+                )
+              ) {
+                return;
+              }
+
+              openMediaModal(
+                url,
+                item.type,
+                item.title ||
+                  "A Special Memory"
+              );
+            }
+          );
+
+          return card;
+        }
+      )
+    );
 
   cards.forEach(
     (card) => {
       if (card) {
-        container.appendChild(card);
+        container.appendChild(
+          card
+        );
       }
     }
   );
 }
 
 // ===============================
-// FULL SCREEN MEDIA VIEWER
+// FULL SCREEN VIEWER
 // ===============================
 
 function openMediaModal(
@@ -509,9 +817,13 @@ function openMediaModal(
 
     media.appendChild(video);
 
-    video.play().catch(
-      () => {}
+    connectVideoToMusic(
+      video
     );
+
+    video
+      .play()
+      .catch(() => {});
   } else {
     const img =
       document.createElement(
@@ -520,7 +832,8 @@ function openMediaModal(
 
     img.src = url;
     img.alt =
-      title || "Urja Memory";
+      title ||
+      "Urja Memory";
 
     media.appendChild(img);
   }
@@ -534,7 +847,8 @@ function openMediaModal(
     "modal-title";
 
   titleElement.textContent =
-    title || "Urja Memory";
+    title ||
+    "Urja Memory";
 
   media.appendChild(
     titleElement
@@ -586,6 +900,8 @@ function closeModal(event) {
 
     document.body.style.overflow =
       "";
+
+    resumeBackgroundMusic();
   }
 }
 
@@ -593,7 +909,10 @@ document.addEventListener(
   "keydown",
   function (event) {
 
-    if (event.key !== "Escape") {
+    if (
+      event.key !==
+      "Escape"
+    ) {
       return;
     }
 
@@ -632,6 +951,8 @@ document.addEventListener(
 
       document.body.style.overflow =
         "";
+
+      resumeBackgroundMusic();
     }
   }
 );
@@ -652,15 +973,42 @@ async function renderAdmin() {
       "admin"
     );
 
-  if (!adminSection) return;
+  if (!adminSection) {
+    return;
+  }
+
+  const loginBox =
+    document.getElementById(
+      "loginBox"
+    );
+
+  const panel =
+    document.getElementById(
+      "panel"
+    );
 
   const {
-    data: { user }
+    data: {
+      user
+    }
   } = await client.auth.getUser();
 
+  // Not logged in
   if (!user) {
     adminSection.style.display =
-      "none";
+      "block";
+
+    if (loginBox) {
+      loginBox.style.display =
+        "block";
+    }
+
+    if (panel) {
+      panel.classList.add(
+        "hidden"
+      );
+    }
+
     return;
   }
 
@@ -671,14 +1019,31 @@ async function renderAdmin() {
     "is_admin"
   );
 
-  if (error || !isAdmin) {
+  // Logged in but not admin
+  if (
+    error ||
+    !isAdmin
+  ) {
     adminSection.style.display =
       "none";
+
     return;
   }
 
+  // Actual admin
   adminSection.style.display =
     "block";
+
+  if (loginBox) {
+    loginBox.style.display =
+      "none";
+  }
+
+  if (panel) {
+    panel.classList.remove(
+      "hidden"
+    );
+  }
 }
 
 // ===============================
@@ -717,9 +1082,6 @@ async function loginUser() {
     !emailInput ||
     !passwordInput
   ) {
-    console.error(
-      "Login fields not found."
-    );
     return;
   }
 
@@ -729,7 +1091,8 @@ async function loginUser() {
   const password =
     passwordInput.value;
 
-  // Remove anonymous session before admin login
+  // Remove anonymous user
+  // before admin login
   const {
     data: {
       session
@@ -742,7 +1105,9 @@ async function loginUser() {
     await client.auth.signOut();
   }
 
-  const { error } =
+  const {
+    error
+  } =
     await client.auth.signInWithPassword(
       {
         email,
@@ -756,11 +1121,6 @@ async function loginUser() {
         error.message;
     }
 
-    console.error(
-      "Login error:",
-      error
-    );
-
     return;
   }
 
@@ -770,6 +1130,7 @@ async function loginUser() {
   }
 
   await loadMemories();
+  await renderAdmin();
 }
 
 window.loginUser =
@@ -894,11 +1255,6 @@ async function uploadFiles() {
         );
 
     if (upload.error) {
-      console.error(
-        "Storage upload error:",
-        upload.error
-      );
-
       if (message) {
         message.textContent =
           `Upload failed: ${upload.error.message}`;
@@ -922,11 +1278,6 @@ async function uploadFiles() {
         .remove([
           path
         ]);
-
-      console.error(
-        "Database error:",
-        insert.error
-      );
 
       if (message) {
         message.textContent =
@@ -988,6 +1339,10 @@ window.addEventListener(
       );
       return;
     }
+
+    // Prepare music while
+    // intro is being shown.
+    prepareBackgroundMusic();
 
     await loadMemories();
   }
