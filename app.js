@@ -1360,3 +1360,106 @@ window.addEventListener(
     await loadMemories();
   }
 );
+// =========================================
+// BIRTHDAY PARTY POPPER
+// Isolated animation — does not touch media
+// =========================================
+
+function launchBirthdayPopper() {
+
+  if (
+    document.getElementById(
+      "birthdayPopper"
+    )
+  ) {
+    return;
+  }
+
+  const popper =
+    document.createElement("div");
+
+  popper.id = "birthdayPopper";
+
+  const symbols = [
+    "🎉",
+    "🎊",
+    "✨",
+    "❤️",
+    "💖",
+    "🌟",
+    "🥳",
+    "🎈"
+  ];
+
+  for (let i = 0; i < 30; i++) {
+
+    const piece =
+      document.createElement("span");
+
+    piece.textContent =
+      symbols[
+        i % symbols.length
+      ];
+
+    piece.style.setProperty(
+      "--x",
+      `${(Math.random() - 0.5) * 90}vw`
+    );
+
+    piece.style.setProperty(
+      "--y",
+      `${50 + Math.random() * 35}vh`
+    );
+
+    piece.style.setProperty(
+      "--delay",
+      `${Math.random() * 0.18}s`
+    );
+
+    piece.style.setProperty(
+      "--rotate",
+      `${Math.random() * 720 - 360}deg`
+    );
+
+    popper.appendChild(piece);
+  }
+
+  document.body.appendChild(popper);
+
+  requestAnimationFrame(() => {
+    popper.classList.add(
+      "birthday-pop"
+    );
+  });
+
+  setTimeout(() => {
+    popper.remove();
+  }, 2600);
+}
+
+window.addEventListener(
+  "load",
+  function () {
+
+    const button =
+      document.getElementById(
+        "enterBtn"
+      );
+
+    if (!button) return;
+
+    // Separate listener:
+    // existing intro logic stays untouched
+    button.addEventListener(
+      "click",
+      function () {
+
+        setTimeout(() => {
+          launchBirthdayPopper();
+        }, 150);
+
+      },
+      { once: true }
+    );
+  }
+);
