@@ -1360,32 +1360,39 @@ body {
   max-height: 90dvh !important;
   overflow-y: auto !important;
 }
-/* FINAL INTRO SCROLLBAR FIX */
+/* FINAL INTRO + PAGE SCROLL FIX */
 
 html,
 body {
   width: 100% !important;
-  height: 100% !important;
+  min-height: 100% !important;
   margin: 0 !important;
+  overflow-x: hidden !important;
+}
+
+body {
+  overflow-y: auto !important;
+}
+
+body.intro-active {
   overflow: hidden !important;
 }
 
 #intro {
   position: fixed !important;
   inset: 0 !important;
-  width: 100vw !important;
+  width: 100% !important;
   height: 100vh !important;
-  height: 100dvh !important;
+  height: 100svh !important;
   max-width: 100% !important;
   overflow: hidden !important;
+  z-index: 99999 !important;
   box-sizing: border-box !important;
 }
 
-#intro::-webkit-scrollbar {
-  display: none !important;
-}
-
+#intro::-webkit-scrollbar,
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
+  width: 0 !important;
   display: none !important;
 }
