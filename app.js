@@ -389,6 +389,7 @@ function setupIntro() {
     // Start cinematic sound
     // from the user's tap
     playIntroSound();
+    startBackgroundMusic();
 
     // Restart intro animation
     // together with sound
@@ -485,9 +486,7 @@ function setupIntro() {
         "intro-active"
       );
 
-      // Start background music
-      // after intro animation
-      startBackgroundMusic();
+   
 
       window.scrollTo({
         top: 0,
