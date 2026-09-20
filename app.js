@@ -326,16 +326,16 @@ async function ensureViewerSession() {
 // INTRO
 // ===============================
 
+// ===============================
+// INTRO
+// ===============================
+
 function setupIntro() {
   const enterBtn =
-    document.getElementById(
-      "enterBtn"
-    );
+    document.getElementById("enterBtn");
 
   const intro =
-    document.getElementById(
-      "intro"
-    );
+    document.getElementById("intro");
 
   if (!enterBtn || !intro) {
     console.error(
@@ -345,16 +345,11 @@ function setupIntro() {
   }
 
   const header =
-    document.querySelector(
-      "header"
-    );
+    document.querySelector("header");
 
   const main =
-    document.querySelector(
-      "main"
-    );
+    document.querySelector("main");
 
-  // Lock page while intro is visible
   document.body.classList.add(
     "intro-active"
   );
@@ -375,20 +370,59 @@ function setupIntro() {
     );
   }
 
-  enterBtn.classList.remove(
-    "hidden"
-  );
-
+  enterBtn.classList.remove("hidden");
   enterBtn.style.display =
     "inline-block";
 
-  enterBtn.onclick =
-    function () {
+  enterBtn.onclick = function () {
 
-      // Unlock sound with user gesture
-      playIntroSound();
+    // Prevent double taps
+    if (
+      enterBtn.dataset.started === "1"
+    ) {
+      return;
+    }
 
-      // Hide intro immediately
+    enterBtn.dataset.started = "1";
+    enterBtn.disabled = true;
+
+    // Start cinematic sound
+    // from the user's tap
+    playIntroSound();
+
+    // Restart intro animation
+    // together with sound
+    const introVideo =
+      document.getElementById(
+        "introVideo"
+      );
+
+    if (introVideo) {
+      try {
+        introVideo.currentTime = 0;
+        introVideo.muted = false;
+        introVideo.volume = 1;
+
+        introVideo
+          .play()
+          .catch((error) => {
+            console.log(
+              "Intro video:",
+              error
+            );
+          });
+      } catch (error) {
+        console.log(
+          "Intro playback:",
+          error
+        );
+      }
+    }
+
+    // Give animation + sound
+    // time to play together
+    setTimeout(function () {
+
       intro.style.setProperty(
         "display",
         "none",
@@ -407,7 +441,6 @@ function setupIntro() {
         "important"
       );
 
-      // Show website
       if (header) {
         header.style.setProperty(
           "display",
@@ -448,42 +481,22 @@ function setupIntro() {
         );
       }
 
-      // Restore page scrolling
       document.body.classList.remove(
         "intro-active"
       );
 
-      // Start intro video if available
-      const introVideo =
-        document.getElementById(
-          "introVideo"
-        );
-
-      if (introVideo) {
-        introVideo.muted = false;
-        introVideo.volume = 1;
-
-        introVideo
-          .play()
-          .catch((error) => {
-            console.log(
-              "Intro video play:",
-              error
-            );
-          });
-      }
-
       // Start background music
-      // from the same user gesture
+      // after intro animation
       startBackgroundMusic();
 
       window.scrollTo({
         top: 0,
         behavior: "smooth"
       });
-    };
-}
 
+    }, 1600);
+  };
+}
 // ===============================
 // LOAD MEMORIES
 // ===============================
