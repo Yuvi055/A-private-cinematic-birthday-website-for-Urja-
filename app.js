@@ -123,8 +123,7 @@ function setupIntro() {
     );
   }
 
-  document.body.style.overflow = "hidden";
-
+document.body.classList.add("intro-active");
   enterBtn.classList.remove("hidden");
   enterBtn.style.display = "inline-block";
 
@@ -190,8 +189,7 @@ function setupIntro() {
       );
     }
 
-    document.body.style.overflow = "";
-
+document.body.classList.remove("intro-active");
     window.scrollTo({
       top: 0,
       behavior: "smooth"
